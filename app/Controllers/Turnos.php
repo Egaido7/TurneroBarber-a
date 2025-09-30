@@ -33,7 +33,7 @@ class Turnos extends BaseController
     ];
 
 
-    // 3. Insertar turno (acá podés usar también un modelo Turnos si lo tenés)
+    // 3. Insertar turno 
     $turnosModel = new Turnos_db();
     $turnosModel->crearTurno($turnoData); 
         session()->setFlashdata('success', '¡Tu turno fue registrado correctamente!');

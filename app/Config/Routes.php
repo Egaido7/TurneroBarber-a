@@ -13,3 +13,5 @@ $routes->post('home/horarios', 'Home::horarios');
 
 // Guardar turno
 $routes->post('turnos/procesar', 'Turnos::procesar');
+
+$routes->get('login', 'Login::index');

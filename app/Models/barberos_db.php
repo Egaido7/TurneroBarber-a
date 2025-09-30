@@ -6,7 +6,7 @@ class Barberos_db extends Model
     protected $primaryKey = 'id_barbero';
 protected $useAutoIncrement = true; protected $returnType = 'array';
 protected $useSoftDeletes = false;
-protected $allowedFields = [' nombre', 'apellido', 'activo'];
+protected $allowedFields = [' nombre', 'apellido', 'activo', 'password'];
 protected $useTimestamps = false; // Dates
 protected $dateFormat = 'datetime';
 protected $createdField = 'created_at';
@@ -22,6 +22,15 @@ public function traerBarberos(){
      return $this->findAll();
 }
 
- 
+public function traerBarbero($id_barbero){
+    return $this->asArray()
+                ->where(['id_barbero' => $id_barbero])
+                ->first();
+}
+
+public function actualizarPassword($id_barbero, $newPassword) {
+    return $this->update($id_barbero, ['password' => $newPassword]);
+
+}
 
 }

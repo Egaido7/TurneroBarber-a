@@ -6,7 +6,7 @@ class Turnos_db extends Model
     protected $primaryKey = 'id_turno';
 protected $useAutoIncrement = true; protected $returnType = 'array';
 protected $useSoftDeletes = false;
-protected $allowedFields = ['fecha', 'hora', 'estado', 'fecha_notificacion','estado_msj' , 'id_cliente_fk', 'id_barbero_fk', 'id_servicio_fk'];
+protected $allowedFields = ['fecha', 'id_hora_fk', 'estado', 'fecha_notificacion','estado_msj' , 'id_cliente_fk', 'id_barbero_fk', 'id_servicio_fk'];
 protected $useTimestamps = true; // Dates
 protected $dateFormat = 'date';
 protected $createdField = 'fecha';
@@ -24,8 +24,11 @@ function traerTurnos(){
 }
 
 function crearTurno($data){
-    $this->insert($data);
+    return $this->insert($data, true); // devuelve el id del turno insertado
+}
+public function eliminarTurno($id_turno){
+   return $this->delete($id_turno);
+}
 }
 
-}
 

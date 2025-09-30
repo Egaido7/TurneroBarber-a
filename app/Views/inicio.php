@@ -411,11 +411,11 @@
     <script>
     const inputFecha = document.getElementById('fecha');
 
-    // ✅ Bloquear fechas pasadas
+    // Bloquear fechas pasadas
     const hoy = new Date().toISOString().split('T')[0];
     inputFecha.setAttribute('min', hoy);
 
-    // ✅ Bloquear domingos
+    // Bloquear domingos
     inputFecha.addEventListener('input', function () {
         const seleccionada = new Date(this.value);
         const diaSemana = seleccionada.getUTCDay(); // 0 = domingo

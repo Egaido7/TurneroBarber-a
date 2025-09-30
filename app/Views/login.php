@@ -86,7 +86,7 @@
 
                 <div class="flex items-center justify-between">
                     
-                    <a href="#" class="text-sm text-sky-400 hover:text-sky-600 transition-colors">
+                    <a href="<?= base_url('admin/cambiarPassword') ?>" class="text-sm text-sky-400 hover:text-sky-600 transition-colors">
                         ¿Olvidaste tu contraseña?
                     </a>
                 </div>

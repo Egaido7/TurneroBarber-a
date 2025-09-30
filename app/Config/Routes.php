@@ -15,3 +15,7 @@ $routes->post('home/horarios', 'Home::horarios');
 $routes->post('turnos/procesar', 'Turnos::procesar');
 
 $routes->get('login', 'Login::index');
+$routes->post('auth/login', 'Login::login');
+$routes->get('logout', 'Login::logout');
+$routes->get('admin/principal', 'Login::admin');
+$routes->get('admin/cambiarPassword', 'Login::cambiarPassword');

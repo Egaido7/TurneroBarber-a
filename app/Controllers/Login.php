@@ -19,7 +19,7 @@ class Login extends BaseController
 
     public function login(){
         $session = session();
-        $username = $this->request->getPost('user');
+        $username = $this->request->getPost('usuario');
         $password = $this->request->getPost('password');
         $barberosModel = new Barberos_db();
         $barbero = $barberosModel->traerBarbero(1);
@@ -34,7 +34,7 @@ class Login extends BaseController
                 'isLoggedIn' => true,
             ];
             $session->set($sessionData);
-            return redirect()->to('/admin/principal');
+            return redirect()->to('admin/principal');
         } else {
             // Credenciales inválidas
             $session->setFlashdata('error', 'Usuario o contraseña incorrectos.');

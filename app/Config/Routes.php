@@ -19,3 +19,5 @@ $routes->post('auth/login', 'Login::login');
 $routes->get('logout', 'Login::logout');
 $routes->get('admin/principal', 'Login::admin');
 $routes->get('admin/cambiarPassword', 'Login::cambiarPassword');
+//Proceso de reserva
+$routes->get('proceso-reserva', 'Turnos::resultado');

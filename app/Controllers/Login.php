@@ -61,8 +61,8 @@ class Login extends BaseController
 
         $contraseñaActual = $this->request->getPost('contraseñaActual');
         $nuevaContraseña = $this->request->getPost('nuevaContraseña');
-
-        // Validar las contraseñas
+        $hashPasword = password_hash($nuevaContraseña, PASSWORD_BCRYPT);
+                // Validar las contraseñas
         if ($contraseñaActual && $nuevaContraseña) {
             $barberosModel = new Barberos_db();
             $barbero = $barberosModel->traerBarbero(1); // Ejemplo: traer barbero con ID 1

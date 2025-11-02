@@ -426,5 +426,20 @@
         }
     });
 </script>
+
+<script>
+    <?php if(isset($fechaSeleccionada) && !empty($fechaSeleccionada)): ?>
+        // Si la variable $fechaSeleccionada existe (es decir, venimos de 'Ver Horarios'),
+        // esperamos un momento a que la página cargue y hacemos scroll a la sección 'turnos'.
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const seccionTurnos = document.getElementById('turnos');
+                if (seccionTurnos) {
+                    seccionTurnos.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 100); // 100ms de espera
+        });
+    <?php endif; ?>
+</script>
 </body>
 </html>

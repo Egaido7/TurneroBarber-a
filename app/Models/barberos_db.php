@@ -33,4 +33,7 @@ public function actualizarPassword($id_barbero, $newPassword) {
 
 }
 
+public function guardarBarbero($data) {
+    return $this->insert($data);
+}
 }

@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="<?= base_url('src/output.css') ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css">
 </head>
-<body class="min-h-screen bg-gray-50">
+<body class="bg-gray-50">
+    <!-- Estructura flexbox principal para ocupar todo el alto de la pantalla -->
     <div class="flex h-screen">
-        <!-- Sidebar -->
-        <nav class="w-64 bg-sky-800 text-white p-6 overflow-y-auto hidden md:flex md:flex-col fixed md:relative h-screen md:h-auto">
+        <!-- Sidebar Fijo -->
+        <nav id="sidebar" class="w-64 bg-sky-800 text-white p-6 overflow-y-auto fixed md:relative h-screen md:h-auto md:flex md:flex-col hidden md:flex left-0 top-0 z-40">
             <div class="flex items-center space-x-2 mb-8">
                 <i data-lucide="scissors" class="h-8 w-8 text-sky-300"></i>
                 <span class="text-xl font-bold">BarberShop Elite</span>
@@ -51,13 +52,17 @@
             </div>
         </nav>
 
+        <!-- Overlay para mobile -->
+        <div id="overlay" class="fixed inset-0 bg-black/50 hidden md:hidden z-30" onclick="toggleMobileSidebar()"></div>
+
         <!-- Mobile Menu Button -->
         <button onclick="toggleMobileSidebar()" class="md:hidden fixed top-4 left-4 z-50 bg-sky-600 text-white p-2 rounded-lg">
             <i data-lucide="menu" class="h-6 w-6"></i>
         </button>
 
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Agregado flex-1 y width completo para que el contenido ocupe el espacio restante -->
+        <div class="flex-1 flex flex-col w-full md:w-auto overflow-hidden md:ml-0">
             <!-- Top Bar -->
             <div class="bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center">
                 <h1 class="text-2xl font-bold text-gray-800">Panel de Administración</h1>
@@ -68,7 +73,8 @@
             </div>
 
             <!-- Content Area -->
-            <div class="flex-1 overflow-auto">
+            <!-- Agregado w-full para ocupar todo el ancho disponible -->
+            <div class="flex-1 overflow-auto w-full">
                 <?php
                 $section = isset($_GET['section']) ? $_GET['section'] : 'turnos';
 
@@ -100,8 +106,10 @@
         lucide.createIcons();
 
         function toggleMobileSidebar() {
-            const sidebar = document.querySelector('nav');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
             sidebar.classList.toggle('hidden');
+            overlay.classList.toggle('hidden');
         }
     </script>
 </body>

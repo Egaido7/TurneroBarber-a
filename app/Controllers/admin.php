@@ -9,9 +9,8 @@ class Admin extends BaseController
    public function dashboard()
     {
         // Verificar que el usuario está autenticado como admin
-        $user = session()->get('user');
-        if (!$user || $user['rol'] !== 'admin') {
-            return redirect()->to('/login');
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to(site_url('login'));
         }
 
         $section = $this->request->getGet('section') ?? 'turnos';
@@ -21,16 +20,22 @@ class Admin extends BaseController
 
     public function agregarPeluquero()
     {
+         if (!session()->get('isLoggedIn')) {
+            return redirect()->to(site_url('login'));
+        }
         $data = $this->request->getPost();
         // Aquí guardarías el peluquero en la BD
-        return redirect()->to('/admin?section=peluqueros')->with('mensaje', 'Peluquero agregado correctamente');
+        return redirect()->to(site_url('admin?section=peluqueros'))->with('mensaje', 'Peluquero agregado correctamente');
     }
 
     public function agregarServicio()
     {
+          if (!session()->get('isLoggedIn')) {
+            return redirect()->to(site_url('login'));
+        }
         $data = $this->request->getPost();
         // Aquí guardarías el servicio en la BD
-        return redirect()->to('/admin?section=servicios')->with('mensaje', 'Servicio agregado correctamente');
+        return redirect()->to(site_url('admin?section=servicios'))->with('mensaje', 'Servicio agregado correctamente');
     }
 
 }

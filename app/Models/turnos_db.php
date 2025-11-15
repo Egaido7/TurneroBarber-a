@@ -23,6 +23,24 @@ function traerTurnos(){
      return $this->findAll();
 }
 
+public function obtenerTurnosConDetalles($fecha) {
+        $builder = $this->db->table('turnos t');
+        $builder->select('t.id_turno, t.fecha, t.estado, c.nombre AS cliente_nombre, b.nombre AS barbero_nombre, s.nombre AS servicio_nombre, s.precio_total AS servicio_precio, h.horario AS hora_turno');
+        $builder->join('clientes c', 't.id_cliente_fk = c.id_cliente');
+        $builder->join('barberos b', 't.id_barbero_fk = b.id_barbero');
+        $builder->join('servicios s', 't.id_servicio_fk = s.id_servicio');
+        $builder->join('horario h', 't.id_hora_fk = h.id_horario'); // Corregido a id_horario
+        
+        // --- LA LÍNEA CLAVE ---
+        $builder->where('t.fecha', $fecha); // Filtramos por la fecha seleccionada
+        
+        $builder->orderBy('h.horario', 'ASC'); // Ordenamos por hora
+        
+        $query = $builder->get();
+        return $query->getResultArray();
+    }
+
+
 function crearTurno($data){
     return $this->insert($data, true); // devuelve el id del turno insertado
 }

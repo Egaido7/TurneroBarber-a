@@ -6,7 +6,7 @@ class Barberos_db extends Model
     protected $primaryKey = 'id_barbero';
 protected $useAutoIncrement = true; protected $returnType = 'array';
 protected $useSoftDeletes = false;
-protected $allowedFields = [' nombre', 'apellido', 'activo', 'password'];
+protected $allowedFields = ['nombre', 'apellido', 'activo', 'password'];
 protected $useTimestamps = false; // Dates
 protected $dateFormat = 'datetime';
 protected $createdField = 'created_at';
@@ -36,4 +36,9 @@ public function actualizarPassword($id_barbero, $newPassword) {
 public function guardarBarbero($data) {
     return $this->insert($data);
 }
+
+ // Función de borrado (aunque podrías usar $model->delete($id))
+    public function eliminarBarbero($id_barbero) {
+        return $this->delete($id_barbero);
+    }
 }

@@ -3,114 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración - BarberShop Elite</title>
+    <title>Panel de Administración</title>
     <link rel="stylesheet" href="<?= base_url('src/output.css') ?>">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <link rel="icon" href="<?= base_url('src/Imagenes/leanbarber.png') ?>" type="image/png">
 </head>
-<body class="bg-gray-50">
-    <!-- Estructura flexbox principal para ocupar todo el alto de la pantalla -->
-    <div class="flex h-screen">
-        <!-- Sidebar Fijo -->
-        <nav id="sidebar" class="w-64 bg-sky-800 text-white p-6 overflow-y-auto fixed md:relative h-screen md:h-auto md:flex md:flex-col hidden md:flex left-0 top-0 z-40">
-            <div class="flex items-center space-x-2 mb-8">
-                <i data-lucide="scissors" class="h-8 w-8 text-sky-300"></i>
-                <span class="text-xl font-bold">BarberShop Elite</span>
-            </div>
+<body class="bg-gray-100 font-sans" x-data="{ sidebarOpen: false }">
 
-            <div class="space-y-2">
-                <a href="<?= base_url('admin?section=turnos') ?>" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-sky-700 transition-colors <?= ($section ?? 'turnos') === 'turnos' ? 'bg-sky-700' : '' ?>">
-                    <i data-lucide="calendar" class="h-5 w-5"></i>
-                    <span>Calendario de Turnos</span>
-                </a>
+    <!-- Sidebar -->
+    <div class="fixed inset-y-0 left-0 w-64 bg-gray-900 text-white transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-30" 
+         :class="{'translate-x-0': sidebarOpen}">
+        
+        <div class="p-4">
+            <a href="<?= base_url('admin') ?>" class="flex items-center space-x-2">
+                <img src="<?= base_url('src/imagenes/logoinicial.png') ?>" alt="Logo" class="h-10 w-10">
+                <span class="text-xl font-bold">LeanBarber Admin</span>
+            </a>
+        </div>
 
-                <a href="<?= base_url('admin?section=peluqueros') ?>" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-sky-700 transition-colors <?= ($section ?? 'turnos') === 'peluqueros' ? 'bg-sky-700' : '' ?>">
-                    <i data-lucide="users" class="h-5 w-5"></i>
-                    <span>Gestión de Peluqueros</span>
-                </a>
-
-                <a href="<?= base_url('admin?section=servicios') ?>" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-sky-700 transition-colors <?= ($section ?? 'turnos') === 'servicios' ? 'bg-sky-700' : '' ?>">
-                    <i data-lucide="scissors" class="h-5 w-5"></i>
-                    <span>Gestión de Servicios</span>
-                </a>
-
-                <a href="<?= base_url('admin?section=precios') ?>" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-sky-700 transition-colors <?= ($section ?? 'turnos') === 'precios' ? 'bg-sky-700' : '' ?>">
-                    <i data-lucide="dollar-sign" class="h-5 w-5"></i>
-                    <span>Gestión de Precios</span>
-                </a>
-
-                <a href="<?= base_url('admin?section=estadisticas') ?>" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-sky-700 transition-colors <?= ($section ?? 'turnos') === 'estadisticas' ? 'bg-sky-700' : '' ?>">
-                    <i data-lucide="bar-chart-3" class="h-5 w-5"></i>
-                    <span>Estadísticas</span>
-                </a>
-            </div>
-
-            <div class="mt-auto pt-6 border-t border-sky-700">
-                <a href="<?= base_url('logout') ?>" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-sky-700 transition-colors">
-                    <i data-lucide="log-out" class="h-5 w-5"></i>
-                    <span>Cerrar Sesión</span>
-                </a>
-            </div>
+        <nav class="mt-8">
+            <a href="<?= site_url('admin?section=turnos') ?>" class="flex items-center px-4 py-3 <?= ($section === 'turnos') ? 'bg-gray-700' : 'hover:bg-gray-700' ?>">
+                <i data-lucide="calendar" class="h-5 w-5 mr-3"></i> Turnos
+            </a>
+            <a href="<?= site_url('admin?section=servicios') ?>" class="flex items-center px-4 py-3 <?= ($section === 'servicios') ? 'bg-gray-700' : 'hover:bg-gray-700' ?>">
+                <i data-lucide="scissors" class="h-5 w-5 mr-3"></i> Servicios
+            </a>
+            <a href="<?= site_url('admin?section=peluqueros') ?>" class="flex items-center px-4 py-3 <?= ($section === 'peluqueros') ? 'bg-gray-700' : 'hover:bg-gray-700' ?>">
+                <i data-lucide="users" class="h-5 w-5 mr-3"></i> Peluqueros
+            </a>
+            <a href="<?= site_url('admin?section=estadisticas') ?>" class="flex items-center px-4 py-3 <?= ($section === 'estadisticas') ? 'bg-gray-700' : 'hover:bg-gray-700' ?>">
+                <i data-lucide="bar-chart-2" class="h-5 w-5 mr-3"></i> Estadísticas
+            </a>
+            <a href="<?= site_url('admin?section=precios') ?>" class="flex items-center px-4 py-3 <?= ($section === 'precios') ? 'bg-gray-700' : 'hover:bg-gray-700' ?>">
+                <i data-lucide="dollar-sign" class="h-5 w-5 mr-3"></i> Precios y Señas
+            </a>
+            <a href="<?= site_url('logout') ?>" class="flex items-center px-4 py-3 hover:bg-gray-700 mt-4">
+                <i data-lucide="log-out" class="h-5 w-5 mr-3"></i> Cerrar Sesión
+            </a>
         </nav>
+    </div>
 
-        <!-- Overlay para mobile -->
-        <div id="overlay" class="fixed inset-0 bg-black/50 hidden md:hidden z-30" onclick="toggleMobileSidebar()"></div>
+    <!-- Overlay para Sidebar (Mobile) -->
+    <div class="fixed inset-0 z-20 bg-black opacity-50 md:hidden" x-show="sidebarOpen" @click="sidebarOpen = false"
+         x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+    </div>
 
-        <!-- Mobile Menu Button -->
-        <button onclick="toggleMobileSidebar()" class="md:hidden fixed top-4 left-4 z-50 bg-sky-600 text-white p-2 rounded-lg">
-            <i data-lucide="menu" class="h-6 w-6"></i>
-        </button>
-
-        <!-- Main Content -->
-        <!-- Agregado flex-1 y width completo para que el contenido ocupe el espacio restante -->
-        <div class="flex-1 flex flex-col w-full md:w-auto overflow-hidden md:ml-0">
-            <!-- Top Bar -->
-            <div class="bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-gray-800">Panel de Administración</h1>
-                <div class="flex items-center space-x-4">
-                    <span class="text-gray-600">Admin</span>
-                    <div class="w-10 h-10 bg-sky-500 rounded-full flex items-center justify-center text-white font-bold">A</div>
-                </div>
+    <!-- Main Content -->
+    <!-- FIX 1: Añadido 'md:ml-64' para empujar el contenido a la derecha en desktop -->
+    <div class="flex flex-col flex-1 md:ml-64">
+        
+        <!-- Header -->
+        <!-- 
+            FIX 3: Añadido 'px-4' para dar espaciado horizontal en el header móvil.
+            Cambiado 'w-full' por 'w-auto' en md: para que no intente ocupar todo.
+            Añadido z-10 para que esté sobre el contenido pero debajo del sidebar-overlay.
+        -->
+        <div class="flex items-center justify-between h-16 bg-white border-b border-gray-200 fixed w-full md:w-auto md:static px-4 z-10">
+            <div class="flex items-center">
+                <!-- FIX 3: Añadido 'mr-2' para separar el botón del título -->
+                <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none focus:text-gray-700 md:hidden mr-2">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+                <h1 class="text-xl font-semibold text-gray-800">Panel de Administración</h1>
             </div>
-
-            <!-- Content Area -->
-            <!-- Agregado w-full para ocupar todo el ancho disponible -->
-            <div class="flex-1 overflow-auto w-full">
-                <?php
-                $section = isset($_GET['section']) ? $_GET['section'] : 'turnos';
-
-                switch($section) {
-                    case 'peluqueros':
-                        include 'sections/peluqueros.php';
-                        break;
-                    case 'servicios':
-                        include 'sections/servicios.php';
-                        break;
-                    case 'precios':
-                        include 'sections/precios.php';
-                        break;
-                    case 'estadisticas':
-                        include 'sections/estadisticas.php';
-                        break;
-                    case 'turnos':
-                    default:
-                        include 'sections/turnos.php';
-                        break;
-                }
-                ?>
+            
+            <div class="flex items-center pr-4">
+                <span class="text-gray-700">Hola, <?= session()->get('username') ?? 'Admin' ?></span>
             </div>
         </div>
+        
+        <!-- Content -->
+        <!-- FIX 2: Añadido 'mt-16 md:mt-0' para empujar el contenido hacia abajo en móvil (mt-16 = h-16 del header) -->
+        <main class="flex-1 p-6 mt-16 md:mt-0">
+            <!-- Mensaje de éxito -->
+            <?php if (session()->getFlashdata('mensaje')): ?>
+                <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded" role="alert">
+                    <?= session()->getFlashdata('mensaje') ?>
+                </div>
+            <?php endif; ?>
+
+            <!-- Dynamic Content -->
+            <?php
+                // Cargar la sección correspondiente
+                if (isset($section)) {
+                    // Validar $section para evitar LFI (Local File Inclusion)
+                    $allowedSections = ['turnos', 'servicios', 'peluqueros', 'estadisticas', 'precios'];
+                    if (in_array($section, $allowedSections)) {
+                        echo view('admin/sections/' . $section);
+                    } else {
+                        echo view('admin/sections/turnos'); // Vista por defecto si no es válida
+                    }
+                } else {
+                    echo view('admin/sections/turnos'); // Vista por defecto
+                }
+            ?>
+        </main>
     </div>
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script>
         lucide.createIcons();
-
-        function toggleMobileSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            sidebar.classList.toggle('hidden');
-            overlay.classList.toggle('hidden');
-        }
     </script>
 </body>
 </html>

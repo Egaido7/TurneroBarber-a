@@ -37,3 +37,11 @@ $routes->get('admin/peluqueros/eliminar/(:num)', 'Admin::eliminarPeluquero/$1');
 
 // --- CRUD Servicios (Placeholder) ---
 $routes->post('/admin/servicios/agregar', 'Admin::agregarServicio');
+
+// --- CRUD Servicios (Precios) ---
+$routes->post('admin/servicios/agregar', 'Admin::agregarServicio'); // Esta ruta ya la tenías
+$routes->post('admin/servicios/editar/(:num)', 'Admin::editarServicio/$1');
+$routes->get('admin/servicios/eliminar/(:num)', 'Admin::eliminarServicio/$1');
+
+// --- ¡NUEVA RUTA PARA ACTUALIZAR PRECIO! ---
+$routes->post('admin/precios/actualizar/(:num)', 'Admin::actualizarPrecioServicio/$1');

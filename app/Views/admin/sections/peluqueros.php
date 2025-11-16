@@ -1,3 +1,6 @@
+<!-- 
+    CORREGIDO: Eliminado 'class_=""' 
+-->
 <div x-data="{ addModal: false, editModal: false, deleteModal: false, barbero: {} }">
 
     <div class="p-8">
@@ -37,9 +40,6 @@
                                 <td class="px-6 py-4">
                                     <!-- 
                                         Botón Editar:
-                                        - Abre el 'editModal'.
-                                        - Carga los datos del barbero en la variable 'barbero' de Alpine.
-                                        - Prepara el 'action' del formulario de edición.
                                     -->
                                     <button 
                                         @click="editModal = true; 
@@ -69,7 +69,11 @@
     </div>
 
     <!-- Modal Agregar Peluquero -->
-    <div x-show="addModal" @keydown.escape.window="addModal = false" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50" style="display: none;">
+    <!-- 
+        CORREGIDO: Eliminado 'class="hidden"' y 'style="display: none;"'. 
+        x-show se encarga de esto.
+    -->
+    <div x-show="addModal" @keydown.escape.window="addModal = false" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4" @click.away="addModal = false">
             <h3 class="text-2xl font-bold mb-6">Agregar Peluquero</h3>
             <form action="<?= site_url('admin/peluqueros/agregar') ?>" method="POST" class="space-y-4">
@@ -95,7 +99,10 @@
     </div>
 
     <!-- Modal Editar Peluquero -->
-    <div x-show="editModal" @keydown.escape.window="editModal = false" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50" style="display: none;">
+    <!-- 
+        CORREGIDO: Eliminado 'class="hidden"' y 'style="display: none;"'. 
+    -->
+    <div x-show="editModal" @keydown.escape.window="editModal = false" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4" @click.away="editModal = false">
             <h3 class="text-2xl font-bold mb-6">Editar Peluquero</h3>
             <!-- El 'action' se establece dinámicamente con JS -->
@@ -128,7 +135,10 @@
     </div>
 
     <!-- Modal Eliminar Peluquero -->
-    <div x-show="deleteModal" @keydown.escape.window="deleteModal = false" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50" style="display: none;">
+    <!-- 
+        CORREGIDO: Eliminado 'class="hidden"' y 'style="display: none;"'. 
+    -->
+    <div x-show="deleteModal" @keydown.escape.window="deleteModal = false" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg p-8 max-w-sm w-full mx-4" @click.away="deleteModal = false">
             <div class="flex items-center space-x-3 mb-4">
                 <div class="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center">

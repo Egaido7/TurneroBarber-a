@@ -3,11 +3,12 @@
 namespace App\Controllers;
 use App\Models\Barberos_db;
 use App\Models\Turnos_db;
+use App\Models\Servicios;
 use PhpParser\Node\Expr\AssignOp\Mod;
 
 class Admin extends BaseController
 {  
-      public function dashboard()
+       public function dashboard()
     {
         // 1. Verificar que el usuario está autenticado
         if (!session()->get('isLoggedIn')) {
@@ -30,14 +31,41 @@ class Admin extends BaseController
             $data['fechaSeleccionada'] = $fechaSeleccionada;
         
         } elseif ($section === 'peluqueros') {
-            // --- ¡NUEVA LÓGICA PARA PELUQUEROS! ---
             $barberosModel = new Barberos_db();
             $data['barberos'] = $barberosModel->traerBarberos();
+        
+        } elseif ($section === 'precios') {
+            // --- ¡NUEVA LÓGICA PARA SERVICIOS/PRECIOS! ---
+            $serviciosModel = new Servicios();
+            $data['servicios'] = $serviciosModel->traerServicios();
         }
-        // ... (aquí irían las otras secciones como 'servicios', etc.) ...
+        // ... (aquí irían las otras secciones como 'estadisticas', etc.) ...
 
         // 5. Cargar la vista principal
         return view('admin/dashboard', $data);
+    }
+
+    /**
+     * ¡NUEVA FUNCIÓN!
+     * Procesa el formulario de la tabla "precios"
+     */
+    public function actualizarPrecioServicio($id_servicio = null)
+    {
+        if (!session()->get('isLoggedIn') || $id_servicio === null) {
+            return redirect()->to(site_url('login'));
+        }
+
+        $nuevoPrecio = $this->request->getPost('nuevo_precio');
+
+        // Validación simple
+        if (empty($nuevoPrecio) || !is_numeric($nuevoPrecio) || $nuevoPrecio < 0) {
+            return redirect()->to(site_url('admin?section=precios'))->with('mensaje', 'Error: El precio no es válido.');
+        }
+
+        $serviciosModel = new Servicios();
+        $serviciosModel->actualizarPrecioServicio($id_servicio, $nuevoPrecio);
+        
+        return redirect()->to(site_url('admin?section=precios'))->with('mensaje', 'Precio actualizado con éxito.');
     }
     
     /**
@@ -132,12 +160,11 @@ class Admin extends BaseController
     }
     
 
-     public function traerEstadisticas(){}
-    public function traerServicios(){}
     public function editarServicio(){}
     public function eliminarServicio(){}
     public function editarPrecio(){}
 
+    public function traerEstadisticas(){}
     public function agregarServicioForm()
     {}
 

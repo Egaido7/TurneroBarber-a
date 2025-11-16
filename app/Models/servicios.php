@@ -30,4 +30,11 @@ function nuevoServicio($servicio){
  $this->insert($servicio);
 }
 
+function actualizarPrecioServicio($id_servicio, $nuevo_precio){
+    $this->set('precio_total', $nuevo_precio);
+    $this->where('id_servicio', $id_servicio);
+    $this->update();
+}
+
+
 }

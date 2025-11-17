@@ -38,6 +38,10 @@ class Admin extends BaseController
             // --- ¡NUEVA LÓGICA PARA SERVICIOS/PRECIOS! ---
             $serviciosModel = new Servicios();
             $data['servicios'] = $serviciosModel->traerServicios();
+        }elseif ($section === 'servicios') {
+            // --- ¡NUEVA LÓGICA PARA EL CRUD DE SERVICIOS! ---
+            $serviciosModel = new Servicios();
+            $data['servicios'] = $serviciosModel->traerServicios();
         }
         // ... (aquí irían las otras secciones como 'estadisticas', etc.) ...
 
@@ -160,13 +164,65 @@ class Admin extends BaseController
     }
     
 
-    public function editarServicio(){}
-    public function eliminarServicio(){}
-    public function editarPrecio(){}
+    public function agregarServicio()
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to(site_url('login'));
+        }
 
+        // Preparamos los datos del formulario
+        $data = [
+            'nombre'       => $this->request->getPost('nombre'),
+            'descripcion'  => $this->request->getPost('descripcion'),
+            'precio_total' => $this->request->getPost('precio_total'),
+            'monto_seña'   => $this->request->getPost('monto_seña')
+        ];
+
+        $serviciosModel = new Servicios();
+        $serviciosModel->nuevoServicio($data); // Usamos la función de tu modelo
+
+        return redirect()->to(site_url('admin?section=servicios'))->with('mensaje', 'Servicio agregado con éxito.');
+    }
+
+    /**
+     * Procesa el formulario del modal "Editar Servicio"
+     */
+    public function editarServicio($id_servicio = null)
+    {
+        if (!session()->get('isLoggedIn') || $id_servicio === null) {
+            return redirect()->to(site_url('login'));
+        }
+
+        // Preparamos los datos del formulario
+        $data = [
+            'nombre'       => $this->request->getPost('nombre'),
+            'descripcion'  => $this->request->getPost('descripcion'),
+            'precio_total' => $this->request->getPost('precio_total'),
+            'monto_seña'   => $this->request->getPost('monto_seña')
+        ];
+
+        $serviciosModel = new Servicios();
+        $serviciosModel->editarServicio($id_servicio, $data); // Usamos la función de tu modelo
+
+        return redirect()->to(site_url('admin?section=servicios'))->with('mensaje', 'Servicio actualizado con éxito.');
+    }
+
+    /**
+     * Procesa el clic en el botón "Eliminar Servicio"
+     */
+    public function eliminarServicio($id_servicio = null)
+    {
+        if (!session()->get('isLoggedIn') || $id_servicio === null) {
+            return redirect()->to(site_url('login'));
+        }
+
+        $serviciosModel = new Servicios();
+        $serviciosModel->eliminarServicio($id_servicio); // Usamos la nueva función del modelo
+        
+        return redirect()->to(site_url('admin?section=servicios'))->with('mensaje', 'Servicio eliminado con éxito.');
+    }
     public function traerEstadisticas(){}
-    public function agregarServicioForm()
-    {}
+    
 
 
 }

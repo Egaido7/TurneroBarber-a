@@ -35,6 +35,9 @@ function actualizarPrecioServicio($id_servicio, $nuevo_precio){
     $this->where('id_servicio', $id_servicio);
     $this->update();
 }
+function eliminarServicio($id_servicio) {
+        return $this->delete($id_servicio);
+    }
 
 
 }

@@ -3,6 +3,9 @@
 namespace App\Controllers;
 use App\Models\Turnos_db;
 use App\Models\Clientes_db;
+use App\Models\Barberos_db;
+use App\Models\Servicios;
+use App\Models\horariosModel;
 
 class Turnos extends BaseController
 {
@@ -61,5 +64,92 @@ class Turnos extends BaseController
     public function resultado()
     {
         return view('proceso');
+    }
+
+      public function reprogramar($id_turno = null)
+    {
+        if ($id_turno === null) {
+            return redirect()->to(site_url('admin?section=turnos'))->with('mensaje', 'Error: ID de turno no válido.');
+        }
+
+        $turnosModel = new Turnos_db();
+        $barberosModel = new Barberos_db();
+        $serviciosModel = new Servicios();
+
+        $turno = $turnosModel->getTurnoDetalles($id_turno);
+
+        if (empty($turno)) {
+            return redirect()->to(site_url('admin?section=turnos'))->with('mensaje', 'Error: Turno no encontrado.');
+        }
+        
+        $data = [
+            'turno' => $turno,
+            'dataBarberos' => $barberosModel->traerBarberos(), // Para el formulario
+            'dataServicios' => $serviciosModel->traerServicios(), // Para el formulario
+            'horariosDisponibles' => [], // Inicialmente vacío
+            'fechaSeleccionada' => $turno['fecha'] // Pre-selecciona la fecha antigua
+        ];
+
+        return view('reprogramar', $data);
+    }
+
+    /**
+     * Carga los horarios disponibles.
+     * Es llamada por el botón "Ver Horarios" (POST).
+     */
+    public function horariosReprogramar($id_turno = null)
+    {
+        if ($id_turno === null) {
+            return redirect()->to(site_url('admin?section=turnos'))->with('mensaje', 'Error: ID de turno no válido.');
+        }
+        
+        $turnosModel = new Turnos_db();
+        $barberosModel = new Barberos_db();
+        $serviciosModel = new Servicios();
+        $horariosModel = new horariosModel();
+        
+        $fecha = $this->request->getPost('fecha');
+        $turno = $turnosModel->getTurnoDetalles($id_turno);
+
+        $data = [
+            'turno' => $turno,
+            'dataBarberos' => $barberosModel->traerBarberos(),
+            'dataServicios' => $serviciosModel->traerServicios(),
+            'horariosDisponibles' => $horariosModel->traerHorariosDisponibles($fecha),
+            'fechaSeleccionada' => $fecha // Carga la *nueva* fecha seleccionada
+        ];
+
+        // Recargamos la misma vista, pero ahora con los horarios
+        return view('reprogramar', $data);
+    }
+
+    /**
+     * PROCESA el formulario y guarda la reprogramación.
+     * Es llamada por el botón "Aceptar" (POST).
+     */
+    public function procesarReprogramacion($id_turno = null)
+    {
+        if ($id_turno === null) {
+            return redirect()->to(site_url('admin?section=turnos'))->with('mensaje', 'Error: ID de turno no válido.');
+        }
+
+        try {
+            $turnosModel = new Turnos_db();
+            
+            $data = [
+                'fecha' => $this->request->getPost('fecha'),
+                'id_hora_fk' => $this->request->getPost('horario'),
+                'estado' => 'reprogramado' // Cambiamos el estado
+            ];
+
+            $turnosModel->reprogramarTurno($id_turno, $data);
+            
+            // Éxito: Redirigimos al panel de admin
+            return redirect()->to(site_url('admin?section=turnos'))->with('mensaje', '¡Turno reprogramado con éxito!');
+
+        } catch (\Exception $e) {
+            // Error
+            return redirect()->back()->withInput()->with('error', 'Error al reprogramar: ' . $e->getMessage());
+        }
     }
 }

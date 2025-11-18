@@ -14,6 +14,17 @@ $routes->post('home/horarios', 'Home::horarios');
 // Guardar turno
 $routes->post('turnos/procesar', 'Turnos::procesar');
 
+// --- ¡NUEVAS RUTAS PARA REPROGRAMAR! ---
+
+// 1. Muestra la página/formulario para reprogramar
+$routes->get('admin/turnos/reprogramar/(:num)', 'Turnos::reprogramar/$1');
+
+// 2. Carga los horarios disponibles (AJAX/Form) para la nueva fecha elegida
+$routes->post('admin/turnos/horarios/(:num)', 'Turnos::horariosReprogramar/$1');
+
+// 3. Procesa y guarda la reprogramación
+$routes->post('admin/turnos/reprogramar/(:num)', 'Turnos::procesarReprogramacion/$1');
+
 
 // --- Login y Admin ---
 $routes->get('login', 'Login::index');

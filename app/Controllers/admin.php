@@ -42,6 +42,30 @@ class Admin extends BaseController
             // --- ¡NUEVA LÓGICA PARA EL CRUD DE SERVICIOS! ---
             $serviciosModel = new Servicios();
             $data['servicios'] = $serviciosModel->traerServicios();
+        }elseif ($section === 'estadisticas') {
+            // --- ¡NUEVA LÓGICA PARA ESTADÍSTICAS! ---
+
+            // Obtener mes y año de la URL, o usar el mes y año actuales
+            $mes = $this->request->getGet('mes') ?? date('m');
+            $anio = $this->request->getGet('anio') ?? date('Y');
+            
+            $turnosModel = new Turnos_db();
+            
+            // 1. Cargar KPIs (Turnos e Ingresos)
+            $data['stats'] = $turnosModel->getEstadisticasMes($mes, $anio);
+            
+            // 2. Cargar Clientes Nuevos
+            $data['clientesNuevos'] = $turnosModel->getClientesNuevosMes($mes, $anio);
+            
+            // 3. Cargar Servicios Populares
+            $data['serviciosPopulares'] = $turnosModel->getServiciosPopularesMes($mes, $anio);
+            
+            // 4. Cargar Barberos Populares
+            $data['barberosPopulares'] = $turnosModel->getBarberosPopularesMes($mes, $anio);
+
+            // 5. Pasar el mes/año seleccionado a la vista (para el input)
+            // Formato YYYY-MM
+            $data['mesSeleccionado'] = $anio . '-' . str_pad($mes, 2, '0', STR_PAD_LEFT);
         }
         // ... (aquí irían las otras secciones como 'estadisticas', etc.) ...
 

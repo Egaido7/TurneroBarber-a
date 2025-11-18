@@ -17,27 +17,26 @@ class Login extends BaseController
         return redirect()->to('/');
     }
 
-     public function login(){
+       public function login(){
         $session = session();
         $username = $this->request->getPost('usuario');
         $password = $this->request->getPost('password');
         
         $barberosModel = new Barberos_db();
-        // Buscamos al barbero por nombre de usuario, no por ID 1
         $barbero = $barberosModel->where('nombre', $username)->first();
     
-        // Verificamos el usuario Y usamos password_verify para la contraseña hasheada
-        if ($barbero && $password == $barbero['password']) {
+        // --- ¡ESTA ES LA CORRECCIÓN IMPORTANTE! ---
+        // Cambiamos '==' por 'password_verify()'
+        if ($barbero && password_verify($password, $barbero['password'])) {
             // Credenciales válidas
             $sessionData = [
                 'username' => $barbero['nombre'], // Guardamos el nombre desde la BD
                 'isLoggedIn' => true,
+                'id_barbero' => $barbero['id_barbero'] // Guardamos el ID para 'cambiarPassword'
                 // 'rol' => $barbero['rol'] // Deberías guardar el rol aquí también
             ];
             $session->set($sessionData);
-            // CORRECCIÓN DE REDIRECT:
-            // Usamos site_url('admin') que ahora, sin index.php,
-            // apuntará a http://localhost/leanbarber/admin
+            
             return redirect()->to(site_url('admin')); 
         
         } else {
@@ -90,6 +89,39 @@ class Login extends BaseController
         }
 
         return redirect()->to(site_url('admin/cambiarPassword')); // Usar site_url()
+    }
+
+    /**
+     * ¡NUEVA FUNCIÓN!
+     * Procesa la solicitud del modal "Olvidé Contraseña"
+     */
+    public function procesarOlvidoPassword()
+    {
+        // 1. Obtener datos del POST
+        $usuario = $this->request->getPost('usuario');
+        $nueva = $this->request->getPost('nueva_password');
+        $confirmar = $this->request->getPost('confirmar_password');
+
+        // 2. Validar que las contraseñas coincidan
+        if ($nueva !== $confirmar) {
+            return redirect()->to(site_url('login'))->with('error', 'Las contraseñas no coinciden. Inténtalo de nuevo.');
+        }
+        
+        // 3. Encontrar al usuario
+        $barberosModel = new Barberos_db();
+        $barbero = $barberosModel->where('nombre', $usuario)->first();
+
+        // 4. Si el usuario no existe, mostrar error
+        if (!$barbero) {
+            return redirect()->to(site_url('login'))->with('error', 'El usuario "' . esc($usuario) . '" no fue encontrado.');
+        }
+
+        // 5. Si todo está bien, hashear la nueva contraseña y actualizar
+        $hashPasword = password_hash($nueva, PASSWORD_BCRYPT);
+        $barberosModel->update($barbero['id_barbero'], ['password' => $hashPasword]);
+
+        // 6. Redirigir al login con mensaje de éxito
+        return redirect()->to(site_url('login'))->with('success', '¡Contraseña actualizada con éxito! Ya puedes iniciar sesión.');
     }
 }
 ?>

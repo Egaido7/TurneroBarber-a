@@ -47,6 +47,88 @@ function crearTurno($data){
 public function eliminarTurno($id_turno){
    return $this->delete($id_turno);
 }
+
+
+ // --- ¡NUEVAS FUNCIONES PARA ESTADÍSTICAS! ---
+
+    /**
+     * Obtiene los KPIs principales (Total de Turnos e Ingresos) para un mes y año.
+     * Solo cuenta turnos que no estén 'cancelado'.
+     */
+    public function getEstadisticasMes($mes, $anio)
+    {
+        $builder = $this->db->table('turnos t');
+        $builder->select('COUNT(t.id_turno) as total_turnos, SUM(s.precio_total) as total_ingresos');
+        $builder->join('servicios s', 't.id_servicio_fk = s.id_servicio');
+        $builder->where('MONTH(t.fecha)', $mes);
+        $builder->where('YEAR(t.fecha)', $anio);
+        $builder->where('t.estado !=', 'cancelado'); // No contamos turnos cancelados
+        $result = $builder->get()->getRowArray();
+
+        return [
+            'total_turnos' => $result['total_turnos'] ?? 0,
+            'total_ingresos' => $result['total_ingresos'] ?? 0
+        ];
+    }
+
+    /**
+     * Obtiene el conteo de clientes cuyo *primer* turno fue en un mes y año específicos.
+     */
+    public function getClientesNuevosMes($mes, $anio)
+    {
+        // Subquery para encontrar la primera fecha de turno de cada cliente
+        $subQuery = $this->db->table('turnos')
+                            ->select('id_cliente_fk, MIN(fecha) as primera_fecha')
+                            ->groupBy('id_cliente_fk')
+                            ->getCompiledSelect();
+        
+        // Query principal: cuenta cuántos de esos "primeros turnos" ocurrieron en el mes/año
+        $builder = $this->db->table("($subQuery) as clientes_nuevos");
+        $builder->select('COUNT(id_cliente_fk) as total_nuevos');
+        $builder->where('MONTH(primera_fecha)', $mes);
+        $builder->where('YEAR(primera_fecha)', $anio);
+        $result = $builder->get()->getRowArray();
+        
+        return $result['total_nuevos'] ?? 0;
+    }
+
+    /**
+     * Obtiene los 5 servicios más populares (por conteo de turnos)
+     */
+    public function getServiciosPopularesMes($mes, $anio)
+    {
+        $builder = $this->db->table('turnos t');
+        $builder->select('s.nombre, COUNT(t.id_turno) as total');
+        $builder->join('servicios s', 't.id_servicio_fk = s.id_servicio');
+        $builder->where('MONTH(t.fecha)', $mes);
+        $builder->where('YEAR(t.fecha)', $anio);
+        $builder->where('t.estado !=', 'cancelado');
+        $builder->groupBy('s.nombre');
+        $builder->orderBy('total', 'DESC');
+        $builder->limit(5); // Top 5
+        
+        return $builder->get()->getResultArray();
+    }
+
+    /**
+     * Obtiene los 3 barberos más populares (por conteo de turnos)
+     */
+    public function getBarberosPopularesMes($mes, $anio)
+    {
+        $builder = $this->db->table('turnos t');
+        $builder->select('b.nombre, b.apellido, COUNT(t.id_turno) as total');
+        $builder->join('barberos b', 't.id_barbero_fk = b.id_barbero');
+        $builder->where('MONTH(t.fecha)', $mes);
+        $builder->where('YEAR(t.fecha)', $anio);
+        $builder->where('t.estado !=', 'cancelado');
+        $builder->groupBy('b.nombre, b.apellido'); // Agrupar por nombre y apellido
+        $builder->orderBy('total', 'DESC');
+        $builder->limit(3); // Top 3
+        
+        return $builder->get()->getResultArray();
+    }
 }
+
+
 
 

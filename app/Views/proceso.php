@@ -29,19 +29,35 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css">
     <style>
         @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
+        
         @keyframes checkmark {
-            0% { stroke-dashoffset: 100; }
-            100% { stroke-dashoffset: 0; }
+            0% {
+                stroke-dashoffset: 100;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
         }
-        .animate-fade-in-scale { animation: fadeInScale 0.5s ease-out; }
+        
+        .animate-fade-in-scale {
+            animation: fadeInScale 0.5s ease-out;
+        }
+        
         .checkmark-circle {
             stroke-dasharray: 166;
             stroke-dashoffset: 166;
             animation: checkmark 0.6s ease-in-out 0.3s forwards;
         }
+        
         .checkmark-check {
             stroke-dasharray: 48;
             stroke-dashoffset: 48;
@@ -69,18 +85,37 @@
                 <?= session()->getFlashdata('exito') ?>
             </p>
 
+            <!-- DETALLES DE RESERVA ACTUALIZADOS -->
             <div class="bg-gray-50 rounded-lg p-6 mb-6 text-left">
                 <h3 class="font-bold text-gray-800 mb-3 flex items-center">
                     <i data-lucide="calendar-check" class="h-5 w-5 text-red-600 mr-2"></i>
                     Detalles de tu reserva
                 </h3>
                 <div class="space-y-2 text-sm text-gray-600">
-                    <!-- Los ?? '...' son valores por defecto por si los datos no llegan -->
-                    <p><strong>Servicio:</strong> <?= session()->getFlashdata('servicio') ?? 'No especificado' ?></p>
-                    <p><strong>Fecha:</strong> <?= session()->getFlashdata('fecha') ?? 'No especificada' ?></p>
-                    <p><strong>Horario:</strong> <?= session()->getFlashdata('horario') ?? 'No especificado' ?></p>
+                    <p><strong>Servicio:</strong> <?= esc(session()->getFlashdata('servicio_nombre')) ?? 'No especificado' ?></p>
+                    <p><strong>Fecha:</strong> <?= esc(date('d/m/Y', strtotime(session()->getFlashdata('fecha')))) ?? 'No especificada' ?></p>
+                    <p><strong>Horario:</strong> <?= esc(substr(session()->getFlashdata('horario'), 0, 5)) ?? 'No especificado' ?></p>
+                    <hr class="my-2 border-gray-200">
+                    <p><strong>Monto Seña:</strong> $<?= number_format(session()->getFlashdata('monto_seña'), 0, ',', '.') ?></p>
+                    <p><strong>Precio Total:</strong> $<?= number_format(session()->getFlashdata('precio_total'), 0, ',', '.') ?></p>
                 </div>
             </div>
+            
+            <!-- ¡NUEVO! LINK DE REPROGRAMACIÓN -->
+            <?php if(session()->getFlashdata('token')): // Solo se muestra en la reserva inicial ?>
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 text-left">
+                <h4 class="font-bold text-yellow-800 mb-2">¿Necesitas cambiar tu turno?</h4>
+                <p class="text-sm text-yellow-700 mb-3">
+                    Puedes reprogramar tu turno para una fecha posterior usando el siguiente enlace. (Guárdalo bien, es único para tu reserva).
+                </p>
+                <!-- Esta es la ruta pública que definimos en Routes.php -->
+                <a href="<?= site_url('turnos/cambiar/' . session()->getFlashdata('token')) ?>" 
+                   target="_blank" 
+                   class="block w-full text-center bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg text-sm transition-colors">
+                    Reprogramar mi turno
+                </a>
+            </div>
+            <?php endif; ?>
 
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                 <div class="flex items-start space-x-2">
@@ -148,7 +183,7 @@
             </div>
 
             <p class="text-sm text-gray-500 mt-4">
-                Serás redirigido al inicio en <span id="countdown">18</span> segundos...
+                Serás redirigido al inicio en <span id="countdown">8</span> segundos...
             </p>
         </div>
         
@@ -183,7 +218,8 @@
         // Solo activa el countdown si existe el elemento
         const countdownElement = document.getElementById('countdown');
         if (countdownElement) {
-            let countdown = <?= session()->getFlashdata('error') ? 8 : 5 ?>;
+            // Aumenté el tiempo de éxito a 15s para que el usuario pueda leer/copiar el link
+            let countdown = <?= session()->getFlashdata('error') ? 8 : 15 ?>;
             
             const interval = setInterval(() => {
                 countdown--;
@@ -200,4 +236,3 @@
     </script>
 </body>
 </html>
-

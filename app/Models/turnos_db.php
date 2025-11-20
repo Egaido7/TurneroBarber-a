@@ -6,7 +6,7 @@ class Turnos_db extends Model
     protected $primaryKey = 'id_turno';
 protected $useAutoIncrement = true; protected $returnType = 'array';
 protected $useSoftDeletes = false;
-protected $allowedFields = ['fecha', 'id_hora_fk', 'estado', 'fecha_notificacion','estado_msj' , 'id_cliente_fk', 'id_barbero_fk', 'id_servicio_fk'];
+protected $allowedFields = ['fecha', 'id_hora_fk', 'estado', 'fecha_notificacion','estado_msj' , 'id_cliente_fk', 'id_barbero_fk', 'id_servicio_fk', 'token_reprogramar'];
 protected $useTimestamps = true; // Dates
 protected $dateFormat = 'date';
 protected $createdField = 'fecha';
@@ -146,6 +146,18 @@ public function eliminarTurno($id_turno){
     public function reprogramarTurno($id_turno, $data) {
         // $data contendrá ['fecha', 'id_hora_fk', 'estado']
         return $this->update($id_turno, $data);
+    }
+
+    public function getTurnoByToken($token) {
+        $builder = $this->db->table('turnos t');
+        $builder->select('t.*, c.nombre AS cliente_nombre, c.apellido AS cliente_apellido, s.nombre AS servicio_nombre, h.horario AS hora_turno');
+        $builder->join('clientes c', 't.id_cliente_fk = c.id_cliente');
+        $builder->join('servicios s', 't.id_servicio_fk = s.id_servicio');
+        $builder->join('horario h', 't.id_hora_fk = h.id_horario');
+        $builder->where('t.token_reprogramar', $token);
+        
+        $query = $builder->get();
+        return $query->getRowArray(); // Un solo resultado
     }
 }
 

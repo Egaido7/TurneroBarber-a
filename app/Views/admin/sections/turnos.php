@@ -44,7 +44,7 @@
                                             turnoInfo = '<?= esc($turno['cliente_nombre']) ?> a las <?= esc(substr($turno['hora_turno'], 0, 5)) ?>'"
                                     class="mt-2 text-xs text-red-600 hover:text-red-800 font-medium"
                                 >
-                                    Cancelar Turno
+                                    Reprogramar Turno
                                 </button>
                             </div>
                         <?php endforeach; ?>
@@ -59,35 +59,36 @@
         </div>
     </div>
 
-    <!-- 
-      MODAL DE CONFIRMACIÓN (Usando Alpine.js)
+   <!-- 
+      MODAL DE CONFIRMACIÓN (ACTUALIZADO)
     -->
     <div x-show="modalOpen" @keydown.escape.window="modalOpen = false" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" style="display: none;">
         <div class="bg-white rounded-lg shadow-xl p-8 max-w-sm w-full" @click.away="modalOpen = false">
             
             <div class="flex items-center space-x-3 mb-4">
-                <div class="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center">
-                    <i data-lucide="alert-triangle" class="h-6 w-6 text-red-600"></i>
+                <div class="h-12 w-12 rounded-full bg-yellow-100 flex items-center justify-center">
+                    <i data-lucide="alert-triangle" class="h-6 w-6 text-yellow-600"></i>
                 </div>
-                <h3 class="text-2xl font-semibold text-gray-800">Confirmar Cancelación</h3>
+                <!-- --- ¡CAMBIO AQUÍ! --- -->
+                <h3 class="text-2xl font-semibold text-gray-800">Reprogramar Turno</h3>
             </div>
             
             <p class="text-gray-600 mb-6">
-                ¿Estás seguro de que deseas cancelar el turno de 
-                <strong x-text="turnoInfo"></strong>? Esta acción no se puede deshacer.
+                <!-- --- ¡CAMBIO AQUÍ! --- -->
+                Estás a punto de modificar el turno de <strong x-text="turnoInfo"></strong>.
+                ¿Deseas continuar a la página de reprogramación?
             </p>
 
             <div class="grid grid-cols-2 gap-4">
                 <button @click="modalOpen = false" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded-lg transition-colors">
-                    No, volver
+                    Volver
                 </button>
-                <!-- 
-                    Este enlace apunta a la nueva ruta /admin/turnos/cancelar/[ID]
-                    Usamos 'x-bind:href' para construir la URL dinámicamente con el turnoId
-                -->
-                <a x-bind:href="'<?= site_url('admin/turnos/cancelar/') ?>' + turnoId"
-                   class="w-full bg-red-600 hover:bg-red-700 text-white text-center font-bold py-3 px-4 rounded-lg transition-colors">
-                    Sí, cancelar
+                
+                <!-- --- ¡CAMBIO AQUÍ! --- -->
+                <!-- Ahora apunta a la ruta de REPROGRAMAR, no a la de CANCELAR -->
+                <a x-bind:href="'<?= site_url('admin/turnos/reprogramar/') ?>' + turnoId"
+                   class="w-full bg-sky-600 hover:bg-sky-700 text-white text-center font-bold py-3 px-4 rounded-lg transition-colors">
+                    Ir a Reprogramar
                 </a>
             </div>
         </div>

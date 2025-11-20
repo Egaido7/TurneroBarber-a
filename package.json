@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+  "tailwind:watch": "tailwindcss -i ./src/input.css -o ./src/output.css --watch",
+    "build:css": "tailwindcss -i ./src/input.css -o ./src/output.css"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

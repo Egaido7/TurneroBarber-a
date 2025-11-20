@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="<?= base_url('src/output.css') ?>">
         <link rel="icon" href="<?= base_url('src/Imagenes/leanbarber.png') ?>" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css">
-   
+    
 </head>
 <body class="min-h-screen bg-white">
     <?php if (session()->getFlashdata('success')): ?>
@@ -96,17 +96,36 @@
     <!-- Hero Section -->
     <section id="inicio" class="pt-16 min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="max-w-3xl mx-auto">
-                <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
-                    Creando Estilos, Definiendo Personalidades
-                </h1>
-                <p class="text-xl md:text-2xl text-gray-200 mb-8">
-                    Estilo impecable, atención al milímetro. Trabajando tu imagen desde 2020.
-                </p>
-                <button onclick="scrollToSection('turnos')" class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors">
-                    Reservar Turno
-                </button>
+            
+            <!-- INICIO DEL BLOQUE DE VIDEO-TEXT -->
+            <div class="relative w-full max-w-5xl h-[300px] md:h-[400px] overflow-hidden rounded-lg mx-auto mb-8 shadow-2xl">
+                <video
+                    class="absolute left-0 top-0 h-full w-full object-cover"
+                    autoplay loop muted playsinline
+                    poster="<?= base_url('src/Imagenes/leanbarber.png') ?>" <!-- Usamos tu logo como imagen de carga -->
+                >
+                    <!-- Video de Pixabay - Afeitada (Licencia gratuita) -->
+                    <source src = <?=base_url('src/imagenes/videoBarber.mp4')?> type="video/mp4" />
+                    Tu navegador no soporta el tag de video.
+                </video>
+                
+                <!-- El H1 con el efecto -->
+                <div class="absolute inset-0 z-10 flex items-center justify-center p-4 bg-black bg-opacity-20">
+                    <h1 class="text-5xl md:text-7xl font-bold text-white mix-blend-screen text-center leading-tight">
+                        Creando Estilos,<br> Definiendo Personalidades
+                    </h1>
+                </div>
             </div>
+            <!-- FIN DEL BLOQUE DE VIDEO-TEXT -->
+
+            <!-- Subtítulo y Botón (Restaurados) -->
+            <p class="text-xl md:text-2xl text-gray-200 mb-8">
+                Estilo impecable, atención al milímetro. Trabajando tu imagen desde 2020.
+            </p>
+            <button onclick="scrollToSection('turnos')" class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors">
+                Reservar Turno
+            </button>
+            
         </div>
     </section>
 
@@ -205,6 +224,7 @@
                 <p class="text-gray-600 mb-6">Completa tus datos y selecciona tu horario preferido</p>
                 
                     <form action="<?= base_url('home/horarios') ?>" method="post" class="space-y-6 mb-6">
+                        <?= csrf_field() ?>
                         <div>
                             <label for="fecha" class="block text-sm font-medium text-gray-700 mb-2">Fecha</label>
                             <input type="date" id="fecha" name="fecha" value="<?= isset($fechaSeleccionada) ? $fechaSeleccionada : '' ?>" required min="<?= date('Y-m-d') ?>" class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
@@ -215,6 +235,7 @@
                     </form>
 
                 <form action="<?= base_url('turnos/procesar') ?>" method="POST" class="space-y-6">
+                    <?= csrf_field() ?>
                     <div class="grid md:grid-cols-2 gap-4">
                          <input type="hidden" name="fecha" value="<?= isset($fechaSeleccionada) ? $fechaSeleccionada : '' ?>">
                         <div>
@@ -275,9 +296,9 @@
             <div class="mb-1">
                 <p class="text-gray-600">Por favor, selecciona una fecha y haz clic en "Ver Horarios Disponibles" para mostrar los horarios.</p>
             </div>
-           
+            
         <?php endif; ?>
-         
+        
     </div>
 </div>
 
@@ -427,6 +448,7 @@
     });
 </script>
 
+<!-- NUEVO SCRIPT PARA AUTO-SCROLL -->
 <script>
     <?php if(isset($fechaSeleccionada) && !empty($fechaSeleccionada)): ?>
         // Si la variable $fechaSeleccionada existe (es decir, venimos de 'Ver Horarios'),
@@ -441,5 +463,7 @@
         });
     <?php endif; ?>
 </script>
+<!-- FIN DEL NUEVO SCRIPT -->
+
 </body>
 </html>

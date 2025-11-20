@@ -26,6 +26,13 @@ $routes->post('admin/turnos/horarios/(:num)', 'Turnos::horariosReprogramar/$1');
 $routes->post('admin/turnos/reprogramar/(:num)', 'Turnos::procesarReprogramacion/$1');
 
 
+// --- ¡NUEVAS RUTAS PÚBLICAS PARA REPROGRAMACIÓN (USUARIO)! ---
+// (:hash) es un placeholder para el token de 64 caracteres
+$routes->get('turnos/cambiar/(:hash)', 'Turnos::reprogramarUsuario/$1');
+$routes->post('turnos/cambiar/horarios/(:hash)', 'Turnos::horariosUsuario/$1');
+$routes->post('turnos/cambiar/guardar/(:hash)', 'Turnos::procesarReprogramacionUsuario/$1');
+
+
 // --- Login y Admin ---
 $routes->get('login', 'Login::index');
 $routes->post('auth/login', 'Login::login');

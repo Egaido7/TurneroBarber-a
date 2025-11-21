@@ -97,28 +97,41 @@
     <section id="inicio" class="pt-16 min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             
-            <!-- INICIO DEL BLOQUE DE VIDEO-TEXT -->
-            <div class="relative w-full max-w-5xl h-[300px] md:h-[400px] overflow-hidden rounded-lg mx-auto mb-8 shadow-2xl">
+            <!-- 
+               BLOQUE DE VIDEO-TEXT CORREGIDO 
+               Efecto: Video dentro del texto, fondo sólido.
+               
+               1. bg-white (o el color de fondo que quieras alrededor del texto)
+               2. Texto NEGRO (text-black) con font-black (muy grueso)
+               3. mix-blend-screen en el contenedor SUPERIOR
+            -->
+            <div class="relative w-full max-w-5xl h-[300px] md:h-[400px] overflow-hidden rounded-lg mx-auto mb-8 shadow-2xl bg-black">
+                
+                <!-- Capa 1: El Video (Al fondo) -->
                 <video
-                    class="absolute left-0 top-0 h-full w-full object-cover"
+                    class="absolute inset-0 w-full h-full object-cover"
                     autoplay loop muted playsinline
-                    poster="<?= base_url('src/Imagenes/leanbarber.png') ?>" <!-- Usamos tu logo como imagen de carga -->
+                    poster="<?= base_url('src/Imagenes/leanbarber.png') ?>"
                 >
-                    <!-- Video de Pixabay - Afeitada (Licencia gratuita) -->
-                    <source src = <?=base_url('src/imagenes/videoBarber.mp4')?> type="video/mp4" />
+                    <source src="<?= base_url('src/Imagenes/videoBarber.mp4') ?>" type="video/mp4" />
                     Tu navegador no soporta el tag de video.
                 </video>
                 
-                <!-- El H1 con el efecto -->
-                <div class="absolute inset-0 z-10 flex items-center justify-center p-4 bg-black bg-opacity-20">
-                    <h1 class="text-5xl md:text-7xl font-bold text-white mix-blend-screen text-center leading-tight">
+                <!-- Capa 2: El "Recorte" (Arriba) -->
+                <!-- 
+                    Usamos mix-blend-multiply:
+                    - El fondo NEGRO (0) multiplicará y oscurecerá todo (fondo sólido).
+                    - El texto BLANCO (1) multiplicará y dejará pasar el video original.
+                -->
+                <div class="absolute inset-0 z-10 flex items-center justify-center bg-black mix-blend-multiply">
+                    <h1 class="text-5xl md:text-7xl font-black text-white text-center leading-tight px-4 uppercase tracking-wide">
                         Creando Estilos,<br> Definiendo Personalidades
                     </h1>
                 </div>
             </div>
             <!-- FIN DEL BLOQUE DE VIDEO-TEXT -->
 
-            <!-- Subtítulo y Botón (Restaurados) -->
+            <!-- Subtítulo y Botón -->
             <p class="text-xl md:text-2xl text-gray-200 mb-8">
                 Estilo impecable, atención al milímetro. Trabajando tu imagen desde 2020.
             </p>

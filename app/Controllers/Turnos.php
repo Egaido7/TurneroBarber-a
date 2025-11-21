@@ -169,7 +169,7 @@ class Turnos extends BaseController
             'turno' => $turno,
             'dataBarberos' => $barberosModel->traerBarberos(),
             'dataServicios' => $serviciosModel->traerServicios(),
-            'horariosDisponibles' => $horariosModel->traerHorariosDisponibles($fecha),
+            'horariosDisponibles' => $horariosModel->horariosDisponibles($fecha),
             'fechaSeleccionada' => $fecha 
         ];
 
@@ -267,7 +267,7 @@ class Turnos extends BaseController
 
         $data = [
             'turno' => $turno,
-            'horariosDisponibles' => $horariosModel->traerHorariosDisponibles($fecha),
+            'horariosDisponibles' => $horariosModel->horariosDisponibles($fecha),
             'fechaSeleccionada' => $fecha,
             'token' => $token
         ];

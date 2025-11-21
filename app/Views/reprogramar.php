@@ -143,7 +143,6 @@
                 const diaSemana = seleccionada.getUTCDay(); // 0 = domingo
 
                 if (diaSemana === 0) {
-                    // Usamos un simple console.warn en lugar de alert, es menos molesto
                     console.warn("No se atiende los domingos.");
                     this.value = ""; // limpia la selección
                     alert("Lo sentimos, no atendemos los domingos. Por favor selecciona otro día.");

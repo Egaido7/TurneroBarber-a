@@ -108,9 +108,6 @@
             </div>
             <?php endif; ?>
         </div>
-
-        <!-- Link para volver al inicio -->
-<!-- ... (resto del div sin cambios) ... -->
     </div>
 
     <!-- 

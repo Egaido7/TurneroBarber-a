@@ -11,7 +11,7 @@ class Turnos extends BaseController
 {
      public function procesar()
     {
-        // Cargamos todos los modelos
+        
         $clientesModel = new Clientes_db();
         $turnosModel = new Turnos_db();
         $serviciosModel = new Servicios();
@@ -85,7 +85,7 @@ class Turnos extends BaseController
                                      "Para cancelar o reprogramar: " . site_url('turnos/cambiar/' . $token);
 
                     // Formatear número (Twilio necesita formato E.164, ej: +549266...)
-                    // Asumimos que el usuario ingresa número local, agregamos prefijo de Argentina si falta
+                    // Asumo que el usuario ingresa número local, agregamos prefijo de Argentina si falta
                     if (strpos($telefonoCliente, '+') === false) {
                         // Ajusta este prefijo según tu país. Ej Argentina celular: +549
                         $telefonoCliente = '+549' . $telefonoCliente; 
@@ -188,15 +188,15 @@ class Turnos extends BaseController
         try {
             $turnosModel = new Turnos_db();
             
-            // --- ¡NUEVA VALIDACIÓN DEL LADO DEL SERVIDOR! ---
+            
             $nuevaFecha = $this->request->getPost('fecha');
             $hoy = date('Y-m-d'); // Obtenemos la fecha de hoy
 
-            // Comparamos si la fecha seleccionada es anterior a la fecha de hoy
+            
             if (strtotime($nuevaFecha) < strtotime($hoy)) {
-                // Si es anterior, rebotamos con un mensaje de error
+                
                 session()->setFlashdata('error', 'Error: No se puede reprogramar un turno para una fecha pasada.');
-                // Redirigimos de vuelta a la misma página de reprogramación
+                
                 return redirect()->to(site_url('admin/turnos/reprogramar/' . $id_turno));
             }
             // --- FIN DE LA VALIDACIÓN ---
@@ -213,8 +213,7 @@ class Turnos extends BaseController
             return redirect()->to(site_url('admin?section=turnos'))->with('mensaje', '¡Turno reprogramado con éxito!');
 
         } catch (\Exception $e) {
-            // Error
-            // Usamos setFlashdata para que el error se muestre en la vista 'reprogramar'
+           
             session()->setFlashdata('error', 'Error al reprogramar: ' . $e->getMessage());
             return redirect()->back()->withInput();
         }
@@ -311,8 +310,7 @@ class Turnos extends BaseController
             session()->setFlashdata('exito', '¡Tu turno fue reprogramado con éxito!');
             session()->setFlashdata('servicio_nombre', $turno['servicio_nombre']);
             session()->setFlashdata('fecha', $nuevaFecha);
-            // Nota: Para el horario en texto, idealmente deberías buscarlo en el modelo de horarios
-            // Aquí usaremos un placeholder o el ID si no hacemos otra query
+           
             session()->setFlashdata('horario', 'Horario Actualizado'); 
             
             return redirect()->to(site_url('proceso-reserva'));

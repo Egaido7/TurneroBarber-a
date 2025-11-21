@@ -25,22 +25,21 @@ class Login extends BaseController
         $barberosModel = new Barberos_db();
         $barbero = $barberosModel->where('nombre', $username)->first();
     
-        // --- ¡ESTA ES LA CORRECCIÓN IMPORTANTE! ---
-        // Cambiamos '==' por 'password_verify()'
+       
         if ($barbero && password_verify($password, $barbero['password'])) {
             // Credenciales válidas
             $sessionData = [
-                'username' => $barbero['nombre'], // Guardamos el nombre desde la BD
+                'username' => $barbero['nombre'], 
                 'isLoggedIn' => true,
-                'id_barbero' => $barbero['id_barbero'] // Guardamos el ID para 'cambiarPassword'
-                // 'rol' => $barbero['rol'] // Deberías guardar el rol aquí también
+                'id_barbero' => $barbero['id_barbero'] 
+                // 'rol' => $barbero['rol'] // a futuro cambiarlo 
             ];
             $session->set($sessionData);
             
             return redirect()->to(site_url('admin')); 
         
         } else {
-            // Credenciales inválidas
+            
             $session->setFlashdata('error', 'Usuario o contraseña incorrectos.');
             return redirect()->back();
         }
@@ -59,8 +58,8 @@ class Login extends BaseController
     public function cambiarPassword()
     {
         // Verificar si el usuario está logueado
-        if (!session()->get('isLoggedIn')) { // <-- CORREGIDO: Debería ser !isLoggedIn
-            return redirect()->to(site_url('login')); // Usar site_url()
+        if (!session()->get('isLoggedIn')) { 
+            return redirect()->to(site_url('login')); 
         }
 
         $contraseñaActual = $this->request->getPost('contraseñaActual');
@@ -72,7 +71,7 @@ class Login extends BaseController
         if ($contraseñaActual && $nuevaContraseña) {
             $barberosModel = new Barberos_db();
             
-            // Traemos al barbero que está logueado (ejemplo con ID 1, pero deberías usar el ID de la sesión)
+            
             $username = session()->get('username');
             $barbero = $barberosModel->where('nombre', $username)->first(); 
 
@@ -80,7 +79,7 @@ class Login extends BaseController
             if ($barbero && password_verify($contraseñaActual, $barbero['password'])) {
                 
                 // Actualizar la contraseña con el HASH
-                $barberosModel->update($barbero['id_barbero'], ['password' => $hashPasword]); // Asumiendo que tienes un id_barbero
+                $barberosModel->update($barbero['id_barbero'], ['password' => $hashPasword]);
                 
                 session()->setFlashdata('success', 'Contraseña cambiada con éxito.');
             } else {
@@ -88,7 +87,7 @@ class Login extends BaseController
             }
         }
 
-        return redirect()->to(site_url('admin/cambiarPassword')); // Usar site_url()
+        return redirect()->to(site_url('admin/cambiarPassword'));
     }
 
     /**

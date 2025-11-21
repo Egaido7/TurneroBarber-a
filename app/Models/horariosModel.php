@@ -29,7 +29,7 @@ public function horariosDisponibles($fecha)
         ->join('turnos t', 'h.id_horario = t.id_hora_fk AND t.fecha = "'.$fecha.'" AND t.estado != "cancelado"', 'left')
         ->where('t.id_turno IS NULL')
         ->get()
-        ->getResultArray(); // 👈 importante
+        ->getResultArray(); // Retorna un array de horarios disponibles
 }
 
 

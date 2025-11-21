@@ -218,7 +218,6 @@
         // Solo activa el countdown si existe el elemento
         const countdownElement = document.getElementById('countdown');
         if (countdownElement) {
-            // Aumenté el tiempo de éxito a 15s para que el usuario pueda leer/copiar el link
             let countdown = <?= session()->getFlashdata('error') ? 8 : 15 ?>;
             
             const interval = setInterval(() => {

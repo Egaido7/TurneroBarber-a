@@ -37,7 +37,6 @@ public function guardarBarbero($data) {
     return $this->insert($data);
 }
 
- // Función de borrado (aunque podrías usar $model->delete($id))
     public function eliminarBarbero($id_barbero) {
         return $this->delete($id_barbero);
     }

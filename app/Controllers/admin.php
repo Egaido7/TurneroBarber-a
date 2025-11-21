@@ -35,15 +35,12 @@ class Admin extends BaseController
             $data['barberos'] = $barberosModel->traerBarberos();
         
         } elseif ($section === 'precios') {
-            // --- ¡NUEVA LÓGICA PARA SERVICIOS/PRECIOS! ---
             $serviciosModel = new Servicios();
             $data['servicios'] = $serviciosModel->traerServicios();
         }elseif ($section === 'servicios') {
-            // --- ¡NUEVA LÓGICA PARA EL CRUD DE SERVICIOS! ---
             $serviciosModel = new Servicios();
             $data['servicios'] = $serviciosModel->traerServicios();
         }elseif ($section === 'estadisticas') {
-            // --- ¡NUEVA LÓGICA PARA ESTADÍSTICAS! ---
 
             // Obtener mes y año de la URL, o usar el mes y año actuales
             $mes = $this->request->getGet('mes') ?? date('m');
@@ -109,7 +106,6 @@ class Admin extends BaseController
         $data = [
             'nombre'   => $this->request->getPost('nombre'),
             'apellido' => $this->request->getPost('apellido'),
-            // ¡IMPORTANTE! Hashear la contraseña
             'password' => password_hash($this->request->getPost('password'), PASSWORD_BCRYPT),
             'activo'   => 1 // Lo ponemos como activo por defecto
         ];
@@ -203,7 +199,7 @@ class Admin extends BaseController
         ];
 
         $serviciosModel = new Servicios();
-        $serviciosModel->nuevoServicio($data); // Usamos la función de tu modelo
+        $serviciosModel->nuevoServicio($data);
 
         return redirect()->to(site_url('admin?section=servicios'))->with('mensaje', 'Servicio agregado con éxito.');
     }
@@ -226,7 +222,7 @@ class Admin extends BaseController
         ];
 
         $serviciosModel = new Servicios();
-        $serviciosModel->editarServicio($id_servicio, $data); // Usamos la función de tu modelo
+        $serviciosModel->editarServicio($id_servicio, $data);
 
         return redirect()->to(site_url('admin?section=servicios'))->with('mensaje', 'Servicio actualizado con éxito.');
     }
@@ -241,7 +237,7 @@ class Admin extends BaseController
         }
 
         $serviciosModel = new Servicios();
-        $serviciosModel->eliminarServicio($id_servicio); // Usamos la nueva función del modelo
+        $serviciosModel->eliminarServicio($id_servicio);
         
         return redirect()->to(site_url('admin?section=servicios'))->with('mensaje', 'Servicio eliminado con éxito.');
     }

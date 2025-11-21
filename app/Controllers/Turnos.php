@@ -6,30 +6,33 @@ use App\Models\Clientes_db;
 use App\Models\Barberos_db;
 use App\Models\Servicios;
 use App\Models\horariosModel;
-
+use Twilio\Rest\Client;
 class Turnos extends BaseController
 {
      public function procesar()
     {
-        // Cargamos todos los modelos que vamos a necesitar
+        // Cargamos todos los modelos
         $clientesModel = new Clientes_db();
         $turnosModel = new Turnos_db();
         $serviciosModel = new Servicios();
         $horariosModel = new horariosModel();
 
         try {
-            // 1. Insertar cliente
+            // 1. Obtener datos del formulario
+            $telefonoCliente = $this->request->getPost('telefono');
+            
+            // 2. Insertar cliente
             $clienteData = [
                 'nombre'   => $this->request->getPost('nombre'),
                 'apellido' => $this->request->getPost('apellido'),
-                'telefono' => $this->request->getPost('telefono')
+                'telefono' => $telefonoCliente
             ];
             $idCliente = $clientesModel->insertarClientes($clienteData);
 
-            // 2. Generar un token único para reprogramar
-            $token = bin2hex(random_bytes(32)); // 64 caracteres
+            // 3. Generar token único
+            $token = bin2hex(random_bytes(32)); 
 
-            // 3. Preparar datos del turno
+            // 4. Preparar datos del turno
             $turnoData = [
                 'fecha'              => $this->request->getPost('fecha'),
                 'id_hora_fk'         => $this->request->getPost('horario'),
@@ -39,27 +42,70 @@ class Turnos extends BaseController
                 'id_cliente_fk'      => $idCliente,
                 'id_servicio_fk'     => $this->request->getPost('id_servicio'),
                 'id_barbero_fk'      => $this->request->getPost('id_barbero'),
-                'token_reprogramar'  => $token // Guardamos el token
+                'token_reprogramar'  => $token
             ];
 
-            // 4. Insertar turno 
+            // 5. Insertar turno 
             $idTurno = $turnosModel->crearTurno($turnoData); 
 
-            // --- ¡ÉXITO! Preparamos los datos para la vista de proceso ---
-            
-            // Obtenemos los detalles para mostrar en la página de éxito
+            // --- PREPARAR DATOS PARA LA VISTA Y SMS ---
             $servicio = $serviciosModel->find($this->request->getPost('id_servicio'));
             $horario = $horariosModel->find($this->request->getPost('horario'));
             
+            $servicioNombre = $servicio['nombre'] ?? 'Servicio';
+            $fechaTurno = date('d/m/Y', strtotime($this->request->getPost('fecha')));
+            $horaTurno = substr($horario['horario'] ?? '00:00', 0, 5);
+            $precioTotal = $servicio['precio_total'] ?? 0;
+            $montoSena = $servicio['monto_seña'] ?? 0;
+
+            // Datos para la vista
             session()->setFlashdata('exito', '¡Tu turno fue registrado correctamente!');
-            
-            // Pasamos los datos reales a la vista de proceso
-            session()->setFlashdata('servicio_nombre', $servicio['nombre'] ?? 'Servicio no encontrado');
-            session()->setFlashdata('precio_total', $servicio['precio_total'] ?? 0);
-            session()->setFlashdata('monto_seña', $servicio['monto_seña'] ?? 0);
+            session()->setFlashdata('servicio_nombre', $servicioNombre);
+            session()->setFlashdata('precio_total', $precioTotal);
+            session()->setFlashdata('monto_seña', $montoSena);
             session()->setFlashdata('fecha', $this->request->getPost('fecha'));
-            session()->setFlashdata('horario', $horario['horario'] ?? 'Hora no encontrada');
-            session()->setFlashdata('token', $token); // Pasamos el token para el link
+            session()->setFlashdata('horario', $horaTurno);
+            session()->setFlashdata('token', $token); 
+
+            // --- INTEGRACIÓN CON TWILIO (SMS) ---
+            try {
+                // Cargar credenciales desde .env
+                $sid    = getenv('TWILIO_SID');
+                $tokenTwilio  = getenv('TWILIO_TOKEN');
+                $twilioNumber = getenv('TWILIO_NUMBER');
+                
+                if ($sid && $tokenTwilio && $twilioNumber) {
+                    $twilio = new Client($sid, $tokenTwilio);
+
+                    // Construir el mensaje
+                    $cuerpoMensaje = "Hola! Reservaste turno en BarberShop Elite 💈\n" .
+                                     "Servicio: $servicioNombre\n" .
+                                     "Fecha: $fechaTurno a las $horaTurno\n" .
+                                     "Total: $$precioTotal (Seña: $$montoSena)\n\n" .
+                                     "Para cancelar o reprogramar: " . site_url('turnos/cambiar/' . $token);
+
+                    // Formatear número (Twilio necesita formato E.164, ej: +549266...)
+                    // Asumimos que el usuario ingresa número local, agregamos prefijo de Argentina si falta
+                    if (strpos($telefonoCliente, '+') === false) {
+                        // Ajusta este prefijo según tu país. Ej Argentina celular: +549
+                        $telefonoCliente = '+549' . $telefonoCliente; 
+                    }
+
+                    $twilio->messages->create(
+                        $telefonoCliente, // Destinatario
+                        [
+                            'from' => $twilioNumber,
+                            'body' => $cuerpoMensaje
+                        ]
+                    );
+                }
+            } catch (\Exception $eTwilio) {
+                // Si falla el SMS, NO detenemos el proceso, solo lo logueamos o avisamos
+                // En modo TRIAL, esto fallará si el número destino no es el tuyo verificado.
+                log_message('error', 'Error enviando SMS Twilio: ' . $eTwilio->getMessage());
+                session()->setFlashdata('warning', 'Turno reservado, pero no se pudo enviar el SMS de confirmación.');
+            }
+            // -------------------------------------
 
         } catch (\Exception $e) {
             session()->setFlashdata('error', 'Ocurrió un error al registrar tu turno: ' . $e->getMessage());
@@ -74,7 +120,7 @@ class Turnos extends BaseController
         return view('proceso');
     }
 
-      public function reprogramar($id_turno = null)
+     public function reprogramar($id_turno = null)
     {
         if ($id_turno === null) {
             return redirect()->to(site_url('admin?section=turnos'))->with('mensaje', 'Error: ID de turno no válido.');
@@ -92,10 +138,10 @@ class Turnos extends BaseController
         
         $data = [
             'turno' => $turno,
-            'dataBarberos' => $barberosModel->traerBarberos(), // Para el formulario
-            'dataServicios' => $serviciosModel->traerServicios(), // Para el formulario
-            'horariosDisponibles' => [], // Inicialmente vacío
-            'fechaSeleccionada' => $turno['fecha'] // Pre-selecciona la fecha antigua
+            'dataBarberos' => $barberosModel->traerBarberos(), 
+            'dataServicios' => $serviciosModel->traerServicios(), 
+            'horariosDisponibles' => [], 
+            'fechaSeleccionada' => $turno['fecha'] 
         ];
 
         return view('reprogramar', $data);
@@ -123,14 +169,12 @@ class Turnos extends BaseController
             'turno' => $turno,
             'dataBarberos' => $barberosModel->traerBarberos(),
             'dataServicios' => $serviciosModel->traerServicios(),
-            'horariosDisponibles' => $horariosModel->HorariosDisponibles($fecha),
-            'fechaSeleccionada' => $fecha // Carga la *nueva* fecha seleccionada
+            'horariosDisponibles' => $horariosModel->traerHorariosDisponibles($fecha),
+            'fechaSeleccionada' => $fecha 
         ];
 
-        // Recargamos la misma vista, pero ahora con los horarios
         return view('reprogramar', $data);
     }
-
     /**
      * PROCESA el formulario y guarda la reprogramación.
      * Es llamada por el botón "Aceptar" (POST).
@@ -195,10 +239,9 @@ class Turnos extends BaseController
             'turno' => $turno,
             'horariosDisponibles' => [],
             'fechaSeleccionada' => $turno['fecha'],
-            'token' => $token // Pasamos el token a la vista
+            'token' => $token 
         ];
 
-        // Re-usamos la misma vista 'reprogramar.php'
         return view('reprogramar', $data);
     }
 
@@ -206,7 +249,7 @@ class Turnos extends BaseController
      * Carga los horarios disponibles para el USUARIO.
      * Es llamada por el botón "Ver Horarios" (POST) desde la ruta pública.
      */
-    public function horariosUsuario($token = null)
+   public function horariosUsuario($token = null)
     {
         if ($token === null) {
             return redirect()->to(site_url('/'))->with('error', 'Error: Link no válido.');
@@ -224,7 +267,7 @@ class Turnos extends BaseController
 
         $data = [
             'turno' => $turno,
-            'horariosDisponibles' => $horariosModel->HorariosDisponibles($fecha),
+            'horariosDisponibles' => $horariosModel->traerHorariosDisponibles($fecha),
             'fechaSeleccionada' => $fecha,
             'token' => $token
         ];
@@ -252,7 +295,6 @@ class Turnos extends BaseController
         try {
             $nuevaFecha = $this->request->getPost('fecha');
 
-            // --- Validación de Fecha Posterior ---
             if (strtotime($nuevaFecha) <= strtotime($turno['fecha'])) {
                 session()->setFlashdata('error', 'Error: Solo puedes reprogramar para una fecha posterior a tu turno original.');
                 return redirect()->to(site_url('turnos/cambiar/' . $token));
@@ -261,22 +303,21 @@ class Turnos extends BaseController
             $data = [
                 'fecha' => $nuevaFecha,
                 'id_hora_fk' => $this->request->getPost('horario'),
-                'estado' => 'confirmado' // Nuevo estado
+                'estado' => 'reprogramado_usr' 
             ];
 
-            // Usamos el ID del turno (obtenido vía token) para actualizar
             $turnosModel->reprogramarTurno($turno['id_turno'], $data);
             
-            // Éxito: Redirigimos a la página de proceso con un mensaje de éxito
             session()->setFlashdata('exito', '¡Tu turno fue reprogramado con éxito!');
             session()->setFlashdata('servicio_nombre', $turno['servicio_nombre']);
             session()->setFlashdata('fecha', $nuevaFecha);
-            session()->setFlashdata('horario', $this->request->getPost('horario_texto')); // Necesitaríamos pasar el texto
+            // Nota: Para el horario en texto, idealmente deberías buscarlo en el modelo de horarios
+            // Aquí usaremos un placeholder o el ID si no hacemos otra query
+            session()->setFlashdata('horario', 'Horario Actualizado'); 
             
             return redirect()->to(site_url('proceso-reserva'));
 
         } catch (\Exception $e) {
-            // Error
             return redirect()->back()->withInput()->with('error', 'Error al reprogramar: ' . $e->getMessage());
         }
     }

@@ -11,28 +11,24 @@ class Turnos extends BaseController
 {
      public function procesar()
     {
-        
         $clientesModel = new Clientes_db();
         $turnosModel = new Turnos_db();
         $serviciosModel = new Servicios();
         $horariosModel = new horariosModel();
+        $barberosModel = new Barberos_db(); // Necesitamos el nombre del barbero
 
         try {
-            // 1. Obtener datos del formulario
-            $telefonoCliente = $this->request->getPost('telefono');
-            
-            // 2. Insertar cliente
+            // 1. Obtener datos del POST (incluido email)
             $clienteData = [
                 'nombre'   => $this->request->getPost('nombre'),
                 'apellido' => $this->request->getPost('apellido'),
-                'telefono' => $telefonoCliente
+                'email'    => $this->request->getPost('email')
             ];
+            
+            // Insertamos y guardamos
             $idCliente = $clientesModel->insertarClientes($clienteData);
-
-            // 3. Generar token único
             $token = bin2hex(random_bytes(32)); 
 
-            // 4. Preparar datos del turno
             $turnoData = [
                 'fecha'              => $this->request->getPost('fecha'),
                 'id_hora_fk'         => $this->request->getPost('horario'),
@@ -44,71 +40,59 @@ class Turnos extends BaseController
                 'id_barbero_fk'      => $this->request->getPost('id_barbero'),
                 'token_reprogramar'  => $token
             ];
+            
+            $turnosModel->crearTurno($turnoData); 
 
-            // 5. Insertar turno 
-            $idTurno = $turnosModel->crearTurno($turnoData); 
-
-            // --- PREPARAR DATOS PARA LA VISTA Y SMS ---
+            // --- PREPARAR DATOS ---
             $servicio = $serviciosModel->find($this->request->getPost('id_servicio'));
             $horario = $horariosModel->find($this->request->getPost('horario'));
+            $barbero = $barberosModel->traerBarbero($this->request->getPost('id_barbero')); // Traer barbero
             
             $servicioNombre = $servicio['nombre'] ?? 'Servicio';
             $fechaTurno = date('d/m/Y', strtotime($this->request->getPost('fecha')));
             $horaTurno = substr($horario['horario'] ?? '00:00', 0, 5);
-            $precioTotal = $servicio['precio_total'] ?? 0;
-            $montoSena = $servicio['monto_seña'] ?? 0;
-
-            // Datos para la vista
-            session()->setFlashdata('exito', '¡Tu turno fue registrado correctamente!');
+            $barberoNombre = ($barbero['nombre'] ?? '') . ' ' . ($barbero['apellido'] ?? '');
+            
+            // Datos Flashdata para la vista (igual que antes)
+            session()->setFlashdata('exito', '¡Tu turno fue registrado correctamente! Te enviamos un email con los detalles.');
             session()->setFlashdata('servicio_nombre', $servicioNombre);
-            session()->setFlashdata('precio_total', $precioTotal);
-            session()->setFlashdata('monto_seña', $montoSena);
+            session()->setFlashdata('precio_total', $servicio['precio_total']);
+            session()->setFlashdata('monto_seña', $servicio['monto_seña']);
             session()->setFlashdata('fecha', $this->request->getPost('fecha'));
             session()->setFlashdata('horario', $horaTurno);
             session()->setFlashdata('token', $token); 
 
-            // --- INTEGRACIÓN CON TWILIO (SMS) ---
-            try {
-                // Cargar credenciales desde .env
-                $sid    = getenv('TWILIO_SID');
-                $tokenTwilio  = getenv('TWILIO_TOKEN');
-                $twilioNumber = getenv('TWILIO_NUMBER');
-                
-                if ($sid && $tokenTwilio && $twilioNumber) {
-                    $twilio = new Client($sid, $tokenTwilio);
+            // --- ENVÍO DE EMAIL GRATUITO ---
+            $emailService = \Config\Services::email();
 
-                    // Construir el mensaje
-                    $cuerpoMensaje = "Hola! Reservaste turno en BarberShop Elite 💈\n" .
-                                     "Servicio: $servicioNombre\n" .
-                                     "Fecha: $fechaTurno a las $horaTurno\n" .
-                                     "Total: $$precioTotal (Seña: $$montoSena)\n\n" .
-                                     "Para cancelar o reprogramar: " . site_url('turnos/cambiar/' . $token);
+            $emailService->setFrom('leanstyle@gmail.com', 'LeanBarber Reservas'); // <--- IMPORTANTE: Tu correo
+            $emailService->setTo($this->request->getPost('email'));
+            $emailService->setSubject('Confirmación de Turno - LeanBarber 💈');
 
-                    // Formatear número (Twilio necesita formato E.164, ej: +549266...)
-                    // Asumo que el usuario ingresa número local, agregamos prefijo de Argentina si falta
-                    if (strpos($telefonoCliente, '+') === false) {
-                        // Ajusta este prefijo según tu país. Ej Argentina celular: +549
-                        $telefonoCliente = '+549' . $telefonoCliente; 
-                    }
+            // Cargar la vista del email y pasarle los datos
+            $mensajeHTML = view('emails/turno_confirmado', [
+                'nombre' => $this->request->getPost('nombre'),
+                'fecha' => $fechaTurno,
+                'hora' => $horaTurno,
+                'servicio' => $servicioNombre,
+                'barbero' => $barberoNombre,
+                'precio' => $servicio['precio_total'],
+                'sena' => $servicio['monto_seña'],
+                'link_reprogramar' => site_url('turnos/cambiar/' . $token)
+            ]);
 
-                    $twilio->messages->create(
-                        $telefonoCliente, // Destinatario
-                        [
-                            'from' => $twilioNumber,
-                            'body' => $cuerpoMensaje
-                        ]
-                    );
-                }
-            } catch (\Exception $eTwilio) {
-                // Si falla el SMS, NO detenemos el proceso, solo lo logueamos o avisamos
-                // En modo TRIAL, esto fallará si el número destino no es el tuyo verificado.
-                log_message('error', 'Error enviando SMS Twilio: ' . $eTwilio->getMessage());
-                session()->setFlashdata('warning', 'Turno reservado, pero no se pudo enviar el SMS de confirmación.');
+            $emailService->setMessage($mensajeHTML);
+
+            if (!$emailService->send()) {
+                // Si falla, logueamos el error pero no detenemos el flujo
+                log_message('error', 'Error enviando email: ' . $emailService->printDebugger(['headers']));
+                // Opcional: avisar al usuario
+                session()->setFlashdata('warning', 'Turno guardado, pero no se pudo enviar el email.');
             }
-            // -------------------------------------
+            // --------------------------------
 
         } catch (\Exception $e) {
-            session()->setFlashdata('error', 'Ocurrió un error al registrar tu turno: ' . $e->getMessage());
+            session()->setFlashdata('error', 'Ocurrió un error: ' . $e->getMessage());
         }
         
         return redirect()->to(site_url('proceso-reserva'));
@@ -120,20 +104,22 @@ class Turnos extends BaseController
         return view('proceso');
     }
 
-     public function reprogramar($id_turno = null)
-    {
-        if ($id_turno === null) {
-            return redirect()->to(site_url('admin?section=turnos'))->with('mensaje', 'Error: ID de turno no válido.');
-        }
-
+     public function reprogramar($id_turno = null) { return $this->_mostrarReprogramar($id_turno, 'admin'); }
+     public function reprogramarUsuario($token = null) { return $this->_mostrarReprogramar($token, 'usuario'); }
+private function _mostrarReprogramar($id_or_token, $tipo) {
         $turnosModel = new Turnos_db();
         $barberosModel = new Barberos_db();
         $serviciosModel = new Servicios();
-
-        $turno = $turnosModel->getTurnoDetalles($id_turno);
+        
+        if ($tipo == 'admin') {
+             if (!session()->get('isLoggedIn')) return redirect()->to(site_url('login'));
+             $turno = $turnosModel->getTurnoDetalles($id_or_token);
+        } else {
+             $turno = $turnosModel->getTurnoByToken($id_or_token);
+        }
 
         if (empty($turno)) {
-            return redirect()->to(site_url('admin?section=turnos'))->with('mensaje', 'Error: Turno no encontrado.');
+            return redirect()->to(site_url($tipo == 'admin' ? 'admin?section=turnos' : '/'))->with('mensaje', 'Turno no encontrado.');
         }
         
         $data = [
@@ -141,9 +127,9 @@ class Turnos extends BaseController
             'dataBarberos' => $barberosModel->traerBarberos(), 
             'dataServicios' => $serviciosModel->traerServicios(), 
             'horariosDisponibles' => [], 
-            'fechaSeleccionada' => $turno['fecha'] 
+            'fechaSeleccionada' => $turno['fecha'],
+            'token' => ($tipo == 'usuario') ? $id_or_token : null
         ];
-
         return view('reprogramar', $data);
     }
 
@@ -151,28 +137,30 @@ class Turnos extends BaseController
      * Carga los horarios disponibles.
      * Es llamada por el botón "Ver Horarios" (POST).
      */
-    public function horariosReprogramar($id_turno = null)
-    {
-        if ($id_turno === null) {
-            return redirect()->to(site_url('admin?section=turnos'))->with('mensaje', 'Error: ID de turno no válido.');
-        }
-        
+    public function horariosReprogramar($id_turno = null) { return $this->_mostrarHorarios($id_turno, 'admin'); }
+        public function horariosUsuario($token = null) { return $this->_mostrarHorarios($token, 'usuario'); }
+        private function _mostrarHorarios($id_or_token, $tipo) {
         $turnosModel = new Turnos_db();
         $barberosModel = new Barberos_db();
         $serviciosModel = new Servicios();
         $horariosModel = new horariosModel();
         
         $fecha = $this->request->getPost('fecha');
-        $turno = $turnosModel->getTurnoDetalles($id_turno);
+        
+        if ($tipo == 'admin') {
+             $turno = $turnosModel->getTurnoDetalles($id_or_token);
+        } else {
+             $turno = $turnosModel->getTurnoByToken($id_or_token);
+        }
 
         $data = [
             'turno' => $turno,
             'dataBarberos' => $barberosModel->traerBarberos(),
             'dataServicios' => $serviciosModel->traerServicios(),
-            'horariosDisponibles' => $horariosModel->horariosDisponibles($fecha),
-            'fechaSeleccionada' => $fecha 
+            'horariosDisponibles' => $horariosModel->traerHorariosDisponibles($fecha),
+            'fechaSeleccionada' => $fecha,
+            'token' => ($tipo == 'usuario') ? $id_or_token : null
         ];
-
         return view('reprogramar', $data);
     }
     /**
@@ -219,60 +207,6 @@ class Turnos extends BaseController
         }
     }
 
-     public function reprogramarUsuario($token = null)
-    {
-        if ($token === null) {
-            return redirect()->to(site_url('/'))->with('error', 'Error: Link de reprogramación no válido.');
-        }
-
-        $turnosModel = new Turnos_db();
-        $horariosModel = new horariosModel();
-        
-        $turno = $turnosModel->getTurnoByToken($token);
-
-        if (empty($turno)) {
-            return redirect()->to(site_url('/'))->with('error', 'Error: Link de reprogramación no válido o el turno ya fue modificado.');
-        }
-        
-        $data = [
-            'turno' => $turno,
-            'horariosDisponibles' => [],
-            'fechaSeleccionada' => $turno['fecha'],
-            'token' => $token 
-        ];
-
-        return view('reprogramar', $data);
-    }
-
-    /**
-     * Carga los horarios disponibles para el USUARIO.
-     * Es llamada por el botón "Ver Horarios" (POST) desde la ruta pública.
-     */
-   public function horariosUsuario($token = null)
-    {
-        if ($token === null) {
-            return redirect()->to(site_url('/'))->with('error', 'Error: Link no válido.');
-        }
-        
-        $turnosModel = new Turnos_db();
-        $horariosModel = new horariosModel();
-        
-        $fecha = $this->request->getPost('fecha');
-        $turno = $turnosModel->getTurnoByToken($token);
-
-        if (empty($turno)) {
-            return redirect()->to(site_url('/'))->with('error', 'Error: Turno no encontrado.');
-        }
-
-        $data = [
-            'turno' => $turno,
-            'horariosDisponibles' => $horariosModel->horariosDisponibles($fecha),
-            'fechaSeleccionada' => $fecha,
-            'token' => $token
-        ];
-
-        return view('reprogramar', $data);
-    }
 
     /**
      * PROCESA el formulario y guarda la reprogramación del USUARIO.
@@ -318,5 +252,24 @@ class Turnos extends BaseController
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('error', 'Error al reprogramar: ' . $e->getMessage());
         }
+    }
+
+    // --- FUNCIÓN AUXILIAR PRIVADA PARA ENVIAR EL EMAIL ---
+    private function _enviarEmailReprogramacion($email, $nombre, $fecha, $hora, $servicio, $token) {
+        $emailService = \Config\Services::email();
+        $emailService->setFrom('leanstylenegocios@gmail.com', 'LeanBarber Reservas'); 
+        $emailService->setTo($email);
+        $emailService->setSubject('Cambio de Turno - LeanBarber 💈');
+
+        $mensajeHTML = view('emails/turno_reprogramado', [
+            'nombre' => $nombre,
+            'fecha' => $fecha,
+            'hora' => $hora,
+            'servicio' => $servicio,
+            'link_ver_turno' => site_url('turnos/cambiar/' . $token)
+        ]);
+
+        $emailService->setMessage($mensajeHTML);
+        return $emailService->send();
     }
 }

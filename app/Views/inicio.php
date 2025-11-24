@@ -249,8 +249,8 @@
                     </div>
 
                     <div>
-                        <label for="telefono" class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
-                        <input type="tel" id="telefono" name="telefono" required  class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Mail</label>
+                        <input type="email" id="email" name="email" required  class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
                     </div>
                     <div>
                         <label for="barbero" class="block text-sm font-medium text-gray-700 mb-2">Barbero</label>

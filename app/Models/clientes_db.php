@@ -6,7 +6,7 @@ class Clientes_db extends Model
     protected $primaryKey = 'id_cliente';
 protected $useAutoIncrement = true; protected $returnType = 'array';
 protected $useSoftDeletes = false;
-protected $allowedFields = ['nombre', 'apellido', 'telefono'];
+protected $allowedFields = ['nombre', 'apellido', 'email'];
 protected $useTimestamps = false; // Dates
 protected $dateFormat = 'datetime';
 protected $createdField = 'created_at';
@@ -24,7 +24,18 @@ public function traerClientes(){
 }
 
 public function insertarClientes($data){
-    return $this->insert($data);
-}
+        // Verificamos si el cliente ya existe por teléfono O email para no duplicar
+        $cliente = $this->where('email', $data['email'])
+                        ->first();
+
+        if ($cliente) {
+            // Si existe, actualizamos sus datos (por si cambió el nombre o algo) y devolvemos su ID
+            $this->update($cliente['id_cliente'], $data);
+            return $cliente['id_cliente'];
+        } else {
+            // Si no existe, lo creamos
+            return $this->insert($data);
+        }
+    }
 
 }

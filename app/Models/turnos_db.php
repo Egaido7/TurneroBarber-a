@@ -128,16 +128,16 @@ public function eliminarTurno($id_turno){
         return $builder->get()->getResultArray();
     }
 
-      public function getTurnoDetalles($id_turno) {
+       public function getTurnoDetalles($id_turno) {
         $builder = $this->db->table('turnos t');
-        $builder->select('t.*, c.nombre AS cliente_nombre, c.apellido AS cliente_apellido, s.nombre AS servicio_nombre, h.horario AS hora_turno');
+        $builder->select('t.*, c.nombre AS cliente_nombre, c.apellido AS cliente_apellido, c.email AS cliente_email, s.nombre AS servicio_nombre, h.horario AS hora_turno');
         $builder->join('clientes c', 't.id_cliente_fk = c.id_cliente');
         $builder->join('servicios s', 't.id_servicio_fk = s.id_servicio');
         $builder->join('horario h', 't.id_hora_fk = h.id_horario');
         $builder->where('t.id_turno', $id_turno);
         
         $query = $builder->get();
-        return $query->getRowArray(); // Usamos getRowArray() para un solo resultado
+        return $query->getRowArray();
     }
 
     /**
@@ -150,14 +150,14 @@ public function eliminarTurno($id_turno){
 
     public function getTurnoByToken($token) {
         $builder = $this->db->table('turnos t');
-        $builder->select('t.*, c.nombre AS cliente_nombre, c.apellido AS cliente_apellido, s.nombre AS servicio_nombre, h.horario AS hora_turno');
+        $builder->select('t.*, c.nombre AS cliente_nombre, c.apellido AS cliente_apellido, c.email AS cliente_email, s.nombre AS servicio_nombre, h.horario AS hora_turno');
         $builder->join('clientes c', 't.id_cliente_fk = c.id_cliente');
         $builder->join('servicios s', 't.id_servicio_fk = s.id_servicio');
         $builder->join('horario h', 't.id_hora_fk = h.id_horario');
         $builder->where('t.token_reprogramar', $token);
         
         $query = $builder->get();
-        return $query->getRowArray(); // Un solo resultado
+        return $query->getRowArray();
     }
 }
 

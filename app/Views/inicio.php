@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,56 +9,57 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css">
     
 </head>
-<body class="min-h-screen bg-white">
+<body class="min-h-screen bg-white font-sans antialiased text-gray-900">
     <?php if (session()->getFlashdata('success')): ?>
-    <div class="flex items-center p-4 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50" role="alert">
-        <!-- Ícono check -->
-        <svg class="flex-shrink-0 w-5 h-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.364 7.364a1 1 0 01-1.414 0L3.293 9.414a1 1 0 111.414-1.414l4.222 4.222 6.657-6.657a1 1 0 011.414 0z" clip-rule="evenodd" />
-        </svg>
-        <span class="sr-only">Éxito</span>
-        <div class="ml-3 text-sm font-medium">
-            <?= session()->getFlashdata('success') ?>
+    <div class="fixed top-20 right-4 z-50 animate-bounce">
+        <div class="flex items-center p-4 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50 shadow-lg" role="alert">
+            <svg class="flex-shrink-0 w-5 h-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.364 7.364a1 1 0 01-1.414 0L3.293 9.414a1 1 0 111.414-1.414l4.222 4.222 6.657-6.657a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            <div class="ml-3 text-sm font-medium">
+                <?= session()->getFlashdata('success') ?>
+            </div>
         </div>
     </div>
-<?php endif; ?>
+    <?php endif; ?>
 
-<?php if (session()->getFlashdata('error')): ?>
-    <div class="flex items-center p-4 mb-4 text-red-800 border border-red-300 rounded-lg bg-red-50" role="alert">
-        <!-- Ícono X -->
-        <svg class="flex-shrink-0 w-5 h-5 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-        </svg>
-        <span class="sr-only">Error</span>
-        <div class="ml-3 text-sm font-medium">
-            <?= session()->getFlashdata('error') ?>
+    <?php if (session()->getFlashdata('error')): ?>
+    <div class="fixed top-20 right-4 z-50 animate-pulse">
+        <div class="flex items-center p-4 mb-4 text-red-800 border border-red-300 rounded-lg bg-red-50 shadow-lg" role="alert">
+            <svg class="flex-shrink-0 w-5 h-5 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+            <div class="ml-3 text-sm font-medium">
+                <?= session()->getFlashdata('error') ?>
+            </div>
         </div>
     </div>
-<?php endif; ?>
+    <?php endif; ?>
+    
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-gray-200 z-50">
+    <nav id="navbar" class="fixed top-0 w-full bg-transparent z-50 transition-all duration-300 ease-in-out">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center space-x-2">
                     <a href="<?= base_url('/') ?>">
                         <img src="<?= base_url('src/imagenes/logoinicial.png') ?>" alt="" style="width: 6.5em; height: 6.5em;">
                     </a>
-                    
-                    <span class="text-xl font-bold text-sky-500">LeanBarber</span>
+                    <span class="text-xl font-bold text-sky-500 tracking-tight">LeanBarber</span>
                 </div>
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <button onclick="scrollToSection('inicio')" class="text-gray-800 hover:text-sky-600 transition-colors">Inicio</button>
-                    <button onclick="scrollToSection('historia')" class="text-gray-800 hover:text-sky-600 transition-colors">Nuestra Historia</button>
-                    <button onclick="scrollToSection('servicios')" class="text-gray-800 hover:text-sky-600 transition-colors">Servicios</button>
-                    <button onclick="scrollToSection('turnos')" class="text-gray-800 hover:text-sky-600 transition-colors">Sacar Turno</button>
-                    <button onclick="scrollToSection('ubicacion')" class="text-gray-800 hover:text-sky-600 transition-colors">Ubicación</button>
-                    <div class="flex items-center space-x-4">
-                        <a href="https://www.instagram.com/lean_style01/" target="_blank" class="text-gray-800 hover:text-sky-600 transition-colors">
+                    <button onclick="scrollToSection('inicio')" class="nav-link text-white hover:text-sky-400 transition-colors font-medium text-sm tracking-wide uppercase">Inicio</button>
+                    <button onclick="scrollToSection('historia')" class="nav-link text-white hover:text-sky-400 transition-colors font-medium text-sm tracking-wide uppercase">Historia</button>
+                    <button onclick="scrollToSection('servicios')" class="nav-link text-white hover:text-sky-400 transition-colors font-medium text-sm tracking-wide uppercase">Servicios</button>
+                    <button onclick="scrollToSection('turnos')" class="nav-link text-white hover:text-sky-400 transition-colors font-medium text-sm tracking-wide uppercase">Sacar Turno</button>
+                    <button onclick="scrollToSection('ubicacion')" class="nav-link text-white hover:text-sky-400 transition-colors font-medium text-sm tracking-wide uppercase">Ubicación</button>
+                    
+                    <div class="flex items-center space-x-4 border-l border-white/20 pl-6">
+                        <a href="https://www.instagram.com/lean_style01/" target="_blank" class="nav-link text-white hover:text-sky-400 transition-transform hover:scale-110 duration-200">
                             <i data-lucide="instagram" class="h-5 w-5"></i>
                         </a>
-                        <a href="https://www.tiktok.com/@leanbraca" target="_blank" class="text-gray-800 hover:text-sky-600 transition-colors">
+                        <a href="https://www.tiktok.com/@leanbraca" target="_blank" class="nav-link text-white hover:text-sky-400 transition-transform hover:scale-110 duration-200">
                             <i data-lucide="music" class="h-5 w-5"></i>
                         </a>
                     </div>
@@ -66,26 +67,26 @@
 
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden">
-                    <button onclick="toggleMobileMenu()" class="text-gray-800 hover:text-sky-600">
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="text-white hover:text-sky-400 transition-colors">
                         <i data-lucide="menu" class="h-6 w-6"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden pb-4">
-                <div class="flex flex-col space-y-2">
-                    <button onclick="scrollToSection('inicio')" class="text-left text-gray-800 hover:text-sky-600 transition-colors py-2">Inicio</button>
-                    <button onclick="scrollToSection('historia')" class="text-left text-gray-800 hover:text-sky-600 transition-colors py-2">Nuestra Historia</button>
-                    <button onclick="scrollToSection('servicios')" class="text-left text-gray-800 hover:text-sky-600 transition-colors py-2">Servicios</button>
-                    <button onclick="scrollToSection('turnos')" class="text-left text-gray-800 hover:text-sky-600 transition-colors py-2">Sacar Turno</button>
-                    <button onclick="scrollToSection('ubicacion')" class="text-left text-gray-800 hover:text-sky-600 transition-colors py-2">Ubicación</button>
-                    <div class="flex items-center space-x-4 py-2">
+            <div id="mobile-menu" class="hidden md:hidden pb-4 bg-white rounded-b-lg shadow-xl absolute left-0 right-0 top-16 border-t border-gray-100">
+                <div class="flex flex-col space-y-2 px-4 pt-2">
+                    <button onclick="scrollToSection('inicio')" class="text-left text-gray-800 hover:text-sky-600 hover:bg-gray-50 rounded-md px-3 py-2 transition-colors font-medium">Inicio</button>
+                    <button onclick="scrollToSection('historia')" class="text-left text-gray-800 hover:text-sky-600 hover:bg-gray-50 rounded-md px-3 py-2 transition-colors font-medium">Nuestra Historia</button>
+                    <button onclick="scrollToSection('servicios')" class="text-left text-gray-800 hover:text-sky-600 hover:bg-gray-50 rounded-md px-3 py-2 transition-colors font-medium">Servicios</button>
+                    <button onclick="scrollToSection('turnos')" class="text-left text-gray-800 hover:text-sky-600 hover:bg-gray-50 rounded-md px-3 py-2 transition-colors font-medium">Sacar Turno</button>
+                    <button onclick="scrollToSection('ubicacion')" class="text-left text-gray-800 hover:text-sky-600 hover:bg-gray-50 rounded-md px-3 py-2 transition-colors font-medium">Ubicación</button>
+                    <div class="flex items-center space-x-6 py-4 justify-center border-t border-gray-100 mt-2">
                         <a href="https://www.instagram.com/lean_style01/" target="_blank" class="text-gray-800 hover:text-sky-600 transition-colors">
-                            <i data-lucide="instagram" class="h-5 w-5"></i>
+                            <i data-lucide="instagram" class="h-6 w-6"></i>
                         </a>
                         <a href="https://www.tiktok.com/@leanbraca" target="_blank" class="text-gray-800 hover:text-sky-600 transition-colors">
-                            <i data-lucide="music" class="h-5 w-5"></i>
+                            <i data-lucide="music" class="h-6 w-6"></i>
                         </a>
                     </div>
                 </div>
@@ -94,17 +95,18 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="inicio" class="pt-16 min-h-screen flex items-center justify-center bg-black">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <section id="inicio" class="pt-0 min-h-screen flex items-center justify-center bg-black relative">
+        <!-- Fondo Negro Absoluto Detrás del Video -->
+        <div class="absolute inset-0 bg-black z-0"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             
-            <!-- 
-               BLOQUE DE VIDEO-TEXT CORREGIDO (RESPONSIVE)
-            -->
-            <div class="relative w-full max-w-5xl h-[300px] md:h-[400px] overflow-hidden rounded-lg mx-auto mb-8 shadow-2xl bg-black group">
+            <!-- BLOQUE DE VIDEO-TEXT -->
+            <div class="relative w-full max-w-5xl h-[300px] md:h-[400px] overflow-hidden rounded-2xl mx-auto mb-8 shadow-2xl shadow-sky-900/20 bg-black group transition-transform duration-500 hover:scale-[1.01]">
                 
-                <!-- Capa 1: El Video (Al fondo) -->
+                <!-- Capa 1: El Video -->
                 <video
-                    class="absolute inset-0 w-full h-full object-cover"
+                    class="absolute inset-0 w-full h-full object-cover opacity-90"
                     autoplay loop muted playsinline
                     poster="<?= base_url('src/Imagenes/leanbarber.png') ?>"
                 >
@@ -112,223 +114,252 @@
                     Tu navegador no soporta el tag de video.
                 </video>
                 
+                <!-- Capa 2: La Máscara -->
                 <div class="absolute inset-0 z-10 flex items-center justify-center bg-black mix-blend-multiply p-4">
-                    <h1 class="text-4xl md:text-7xl font-black text-white text-center leading-snug md:leading-tight uppercase tracking-wide select-none">
+                    <h1 class="text-4xl md:text-7xl font-black text-white text-center leading-snug md:leading-tight uppercase tracking-wider select-none">
                         Creando Estilos<br> Definiendo Personalidades
                     </h1>
                 </div>
             </div>
 
             <!-- Subtítulo y Botón -->
-            <p class="text-xl md:text-2xl text-gray-200 mb-8">
+            <p class="text-xl md:text-2xl text-gray-300 mb-10 font-light tracking-wide">
                 Estilo impecable, atención al milímetro. Trabajando tu imagen desde 2020.
             </p>
-            <button onclick="scrollToSection('turnos')" class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors">
-                Reservar Turno
+            <!-- Botón Mejorado: Sombra resplandeciente y efecto hover -->
+            <button onclick="scrollToSection('turnos')" class="group relative bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 px-10 rounded-full text-lg transition-all duration-300 shadow-[0_0_20px_rgba(14,165,233,0.5)] hover:shadow-[0_0_30px_rgba(14,165,233,0.8)] hover:-translate-y-1">
+                <span class="flex items-center">
+                    Reservar Turno
+                    <i data-lucide="calendar-check" class="ml-2 h-5 w-5 group-hover:rotate-12 transition-transform"></i>
+                </span>
             </button>
             
         </div>
     </section>
 
     <!-- Historia Section -->
-    <section id="historia" class="py-20 bg-white">
+    <section id="historia" class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Nuestra Historia</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Una tradición familiar que comenzó en 1995 y continúa evolucionando con los tiempos
+                <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Nuestra Historia</h2>
+                <div class="w-24 h-1 bg-sky-500 mx-auto rounded-full mb-6"></div>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Una tradición familiar que comenzó en 1995 y continúa evolucionando con los tiempos.
                 </p>
             </div>
 
             <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div class="space-y-6">
-                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                        <div class="flex items-center space-x-2 mb-4">
-                            <div class="w-3 h-3 bg-sky-500 rounded-full"></div>
-                            <h3 class="text-lg font-bold">2020 - Los Inicios</h3>
+                <div class="space-y-8">
+                    <!-- Tarjetas con efecto Hover -->
+                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-x-1 hover:border-sky-200 group">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-3 h-3 bg-gray-300 group-hover:bg-sky-500 rounded-full transition-colors"></div>
+                            <h3 class="text-lg font-bold text-gray-800">2020 - Los Inicios</h3>
                         </div>
-                        <p class="text-gray-600">
+                        <p class="text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-100 group-hover:border-sky-100 transition-colors">
                             Don Carlos abrió las puertas de su primera barbería con una visión clara: ofrecer el mejor servicio de corte y afeitado de la ciudad.
                         </p>
                     </div>
 
-                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                        <div class="flex items-center space-x-2 mb-4">
-                            <div class="w-3 h-3 bg-sky-500 rounded-full"></div>
-                            <h3 class="text-lg font-bold">2022 - Expansión</h3>
+                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-x-1 hover:border-sky-200 group">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-3 h-3 bg-gray-300 group-hover:bg-sky-500 rounded-full transition-colors"></div>
+                            <h3 class="text-lg font-bold text-gray-800">2022 - Expansión</h3>
                         </div>
-                        <p class="text-gray-600">
+                        <p class="text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-100 group-hover:border-sky-100 transition-colors">
                             La segunda generación se suma al negocio familiar, incorporando técnicas modernas sin perder la esencia tradicional.
                         </p>
                     </div>
 
-                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                        <div class="flex items-center space-x-2 mb-4">
-                            <div class="w-3 h-3 bg-sky-500 rounded-full"></div>
-                            <h3 class="text-lg font-bold">2025 - Presente</h3>
+                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-x-1 hover:border-sky-200 group">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-3 h-3 bg-sky-500 rounded-full shadow-sm shadow-sky-500/50"></div>
+                            <h3 class="text-lg font-bold text-gray-800">2025 - Presente</h3>
                         </div>
-                        <p class="text-gray-600">
+                        <p class="text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-100 group-hover:border-sky-100 transition-colors">
                             Hoy somos referentes en la ciudad, combinando la experiencia de décadas con las últimas tendencias en barbería masculina.
                         </p>
                     </div>
                 </div>
 
-                <div class="bg-gray-100 rounded-lg p-8 text-center">
-                    <div class="w-32 h-32 bg-gray-800 rounded-full mx-auto mb-6 flex items-center justify-center">
-                        <i data-lucide="scissors" class="h-16 w-16 text-white"></i>
+                <div class="bg-gray-50 rounded-2xl p-10 text-center border border-gray-100 shadow-inner">
+                    <div class="w-32 h-32 bg-gray-900 rounded-full mx-auto mb-6 flex items-center justify-center shadow-xl shadow-gray-500/20">
+                        <i data-lucide="scissors" class="h-14 w-14 text-sky-400"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Más de 15,000 cortes</h3>
-                    <p class="text-gray-600">generando confianza a los clientes a lo largo de los años</p>
+                    <h3 class="text-3xl font-bold text-gray-900 mb-2">15,000+</h3>
+                    <p class="text-lg text-gray-600 font-medium">Cortes Realizados</p>
+                    <p class="text-sm text-gray-400 mt-4">Generando confianza y estilo desde nuestros inicios.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Servicios Section -->
-    <section id="servicios" class="py-20 bg-gray-50">
+    <section id="servicios" class="py-24 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Nuestros Servicios</h2>
+                <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Nuestros Servicios</h2>
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Servicios profesionales adaptados a tu estilo y personalidad
+                    Experiencias personalizadas para tu estilo único.
                 </p>
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <?php if(isset($dataServicios) && !empty($dataServicios)): ?>
                 <?php foreach($dataServicios as $service): ?>
-                <div class="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-lg transition-shadow">
+                <!-- Card de Servicio Mejorada -->
+                <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-default">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-lg font-bold"><?= $service['nombre'] ?></h3>
-                        <span class="text-2xl font-bold text-sky-600"><?= $service['precio_total'] ?></span>
+                        <div class="p-3 bg-sky-50 rounded-lg group-hover:bg-sky-100 transition-colors">
+                            <i data-lucide="star" class="h-6 w-6 text-sky-500"></i>
+                        </div>
+                        <span class="text-2xl font-bold text-sky-600">$<?= number_format($service['precio_total'], 0, ',', '.') ?></span>
                     </div>
-                    <p class="text-gray-600"><?= $service['descripcion'] ?></p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-sky-600 transition-colors"><?= $service['nombre'] ?></h3>
+                    <p class="text-gray-600 leading-relaxed text-sm"><?= $service['descripcion'] ?></p>
                 </div>
                 <?php endforeach; ?>
                 <?php else: ?>
-                <p class="text-center text-gray-600 col-span-3">No hay servicios disponibles en este momento.</p>
+                <div class="col-span-3 text-center py-12">
+                    <p class="text-gray-500 text-lg">No hay servicios disponibles por el momento.</p>
+                </div>
                 <?php endif; ?>
             </div>
         </div>
     </section>
 
     <!-- Turnos Section -->
-    <section id="turnos" class="py-20 bg-white">
+    <section id="turnos" class="py-24 bg-white relative overflow-hidden">
+        <!-- Decoración de fondo sutil -->
+        <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white to-gray-50 -z-10"></div>
+
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Reservar Turno</h2>
-                <p class="text-xl text-gray-600">Agenda tu cita de forma rápida y sencilla</p>
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Reservar Turno</h2>
+                <p class="text-xl text-gray-600">Agenda tu cita de forma rápida, sencilla y segura.</p>
             </div>
 
-            <div class="bg-gray-50 rounded-lg p-8 border border-gray-200 max-w-2xl mx-auto">
-                <h3 class="text-xl font-bold mb-2">Formulario de Reserva</h3>
-                <p class="text-gray-600 mb-6">Completa tus datos y selecciona tu horario preferido</p>
+            <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-10 border border-gray-100">
+                <h3 class="text-2xl font-bold text-gray-800 mb-2 flex items-center">
+                    <i data-lucide="calendar" class="mr-3 h-6 w-6 text-sky-500"></i>
+                    Formulario de Reserva
+                </h3>
+                <p class="text-gray-500 mb-8 text-sm">Completa tus datos para confirmar tu asistencia.</p>
                 
-                    <form action="<?= base_url('home/horarios') ?>" method="post" class="space-y-6 mb-6">
+                    <form action="<?= base_url('home/horarios') ?>" method="post" class="mb-8 p-6 bg-gray-50 rounded-xl border border-gray-100">
                         <?= csrf_field() ?>
-                        <div>
-                            <label for="fecha" class="block text-sm font-medium text-gray-700 mb-2">Fecha</label>
-                            <input type="date" id="fecha" name="fecha" value="<?= isset($fechaSeleccionada) ? $fechaSeleccionada : '' ?>" required min="<?= date('Y-m-d') ?>" class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                        <div class="flex flex-col md:flex-row gap-4 items-end">
+                            <div class="w-full">
+                                <label for="fecha" class="block text-sm font-semibold text-gray-700 mb-2">Selecciona una fecha</label>
+                                <input type="date" id="fecha" name="fecha" value="<?= isset($fechaSeleccionada) ? $fechaSeleccionada : '' ?>" required min="<?= date('Y-m-d') ?>" class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-shadow shadow-sm">
+                            </div>
+                            <button type="submit" class="w-full md:w-auto bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-md hover:shadow-lg whitespace-nowrap">
+                                Buscar Horarios
+                            </button>
                         </div>
-                        <button type="submit" class="w-full bg-sky-400 hover:bg-sky-500 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors">
-                        Ver Horarios Disponibles
-                    </button>
                     </form>
 
                 <form action="<?= base_url('turnos/procesar') ?>" method="POST" class="space-y-6">
                     <?= csrf_field() ?>
-                    <div class="grid md:grid-cols-2 gap-4">
-                         <input type="hidden" name="fecha" value="<?= isset($fechaSeleccionada) ? $fechaSeleccionada : '' ?>">
-                        <div>
+                    <input type="hidden" name="fecha" value="<?= isset($fechaSeleccionada) ? $fechaSeleccionada : '' ?>">
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="relative group">
                             <label for="nombre" class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
-                            <input type="text" id="nombre" name="nombre" pattern = "^[a-zA-Z\s]+$" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                            <input type="text" id="nombre" name="nombre" pattern="^[a-zA-Z\s]+$" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all shadow-sm group-hover:border-gray-400" placeholder="Tu nombre">
+                            <i data-lucide="user" class="absolute left-3 top-[38px] h-5 w-5 text-gray-400"></i>
                         </div>
-                        <div>
+                        <div class="relative group">
                             <label for="apellido" class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
-                            <input type="text" id="apellido" name="apellido"  pattern = "^[a-zA-Z\s]+$" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                            <input type="text" id="apellido" name="apellido" pattern="^[a-zA-Z\s]+$" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all shadow-sm group-hover:border-gray-400" placeholder="Tu apellido">
+                            <i data-lucide="user" class="absolute left-3 top-[38px] h-5 w-5 text-gray-400"></i>
                         </div>
                     </div>
 
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="telefono" class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
-                            <input type="tel" id="telefono" name="telefono" required  class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
-                        </div>
-                        <div>
+                    <div class="grid md:grid-cols-1 gap-6">
+                        <div class="relative group">
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input type="email" id="email" name="email" required placeholder="ejemplo@gmail.com" class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                            <input type="email" id="email" name="email" required placeholder="ejemplo@gmail.com" class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all shadow-sm group-hover:border-gray-400">
+                            <i data-lucide="mail" class="absolute left-3 top-[38px] h-5 w-5 text-gray-400"></i>
                         </div>
                     </div>
 
-                    <div>
-                        <label for="barbero" class="block text-sm font-medium text-gray-700 mb-2">Barbero</label>
-                        
-                        <!-- LÓGICA DE SELECCIÓN DE BARBERO -->
-                        <?php if(isset($dataBarberos) && count($dataBarberos) === 1): ?>
-                            <!-- Caso: Solo un barbero disponible -->
-                            <?php $unicoBarbero = $dataBarberos[0]; ?>
-                            <input type="hidden" name="id_barbero" value="<?= $unicoBarbero['id_barbero'] ?>">
-                            <div class="relative">
-                                <input type="text" value="<?= $unicoBarbero['nombre'] ?> <?= $unicoBarbero['apellido'] ?>" readonly class="w-full p-3 border border-gray-300 rounded-md bg-gray-100 text-gray-500 cursor-not-allowed focus:outline-none">
-                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                    <i data-lucide="lock" class="h-4 w-4 text-gray-400"></i>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="barbero" class="block text-sm font-medium text-gray-700 mb-2">Barbero</label>
+                            
+                            <?php if(isset($dataBarberos) && count($dataBarberos) === 1): ?>
+                                <?php $unicoBarbero = $dataBarberos[0]; ?>
+                                <input type="hidden" name="id_barbero" value="<?= $unicoBarbero['id_barbero'] ?>">
+                                <div class="relative">
+                                    <input type="text" value="<?= $unicoBarbero['nombre'] ?> <?= $unicoBarbero['apellido'] ?>" readonly class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed focus:outline-none shadow-inner">
+                                    <i data-lucide="user-check" class="absolute left-3 top-[14px] h-5 w-5 text-gray-400"></i>
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <i data-lucide="lock" class="h-4 w-4 text-gray-400"></i>
+                                    </div>
                                 </div>
-                            </div>
-
-                        <?php else: ?>
-                            <!-- Caso: Múltiples barberos o ninguno -->
-                            <select id="barbero" name="id_barbero" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
-                                <option value="">Selecciona un barbero</option>
-                                <?php if(isset($dataBarberos) && !empty($dataBarberos)): ?>
-                                    <?php foreach($dataBarberos as $barbero): ?>
-                                        <option value="<?= $barbero['id_barbero'] ?>"><?= $barbero['nombre'] ?> <?= $barbero['apellido'] ?></option>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <option value="">No hay barberos disponibles</option>
-                                <?php endif; ?>
-                            </select>
-                        <?php endif; ?>
-                        <!-- FIN LÓGICA DE SELECCIÓN -->
-
-                    </div>
-
-                    <div>
-                        <label for="servicio" class="block text-sm font-medium text-gray-700 mb-2">Servicio</label>
-                        <select id="servicio" name="id_servicio" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
-                            <option value="">Selecciona un servicio</option>
-                                <?php if(isset($dataServicios) && !empty($dataServicios)): ?>
-                            <?php foreach($dataServicios as $service): ?>
-                            <option value="<?= $service['id_servicio'] ?>"><?= $service['nombre'] ?> - Total <?= $service['precio_total'] ?> - Seña <?= $service['monto_seña'] ?></option>
-                            <?php endforeach; ?>
                             <?php else: ?>
-                            <option value="">No hay servicios disponibles</option>
+                                <div class="relative">
+                                    <select id="barbero" name="id_barbero" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 shadow-sm appearance-none">
+                                        <option value="">Selecciona un barbero</option>
+                                        <?php if(isset($dataBarberos) && !empty($dataBarberos)): ?>
+                                            <?php foreach($dataBarberos as $barbero): ?>
+                                                <option value="<?= $barbero['id_barbero'] ?>"><?= $barbero['nombre'] ?> <?= $barbero['apellido'] ?></option>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <option value="">No hay barberos disponibles</option>
+                                        <?php endif; ?>
+                                    </select>
+                                    <i data-lucide="user-check" class="absolute left-3 top-[14px] h-5 w-5 text-gray-400"></i>
+                                    <i data-lucide="chevron-down" class="absolute right-3 top-[14px] h-5 w-5 text-gray-400 pointer-events-none"></i>
+                                </div>
                             <?php endif; ?>
-                        </select>
+                        </div>
+
+                        <div>
+                            <label for="servicio" class="block text-sm font-medium text-gray-700 mb-2">Servicio</label>
+                            <div class="relative">
+                                <select id="servicio" name="id_servicio" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 shadow-sm appearance-none">
+                                    <option value="">Selecciona un servicio</option>
+                                        <?php if(isset($dataServicios) && !empty($dataServicios)): ?>
+                                    <?php foreach($dataServicios as $service): ?>
+                                    <option value="<?= $service['id_servicio'] ?>"><?= $service['nombre'] ?> - Total $<?= number_format($service['precio_total'], 0, ',', '.') ?></option>
+                                    <?php endforeach; ?>
+                                    <?php else: ?>
+                                    <option value="">No hay servicios disponibles</option>
+                                    <?php endif; ?>
+                                </select>
+                                <i data-lucide="scissors" class="absolute left-3 top-[14px] h-5 w-5 text-gray-400"></i>
+                                <i data-lucide="chevron-down" class="absolute right-3 top-[14px] h-5 w-5 text-gray-400 pointer-events-none"></i>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mt-4">
-    <label class="block text-sm font-medium text-gray-700 mb-2">Horarios Disponibles</label>
-    <div class="grid grid-cols-3 md:grid-cols-4 gap-2">
-        <?php if(isset($horariosDisponibles) && !empty($horariosDisponibles)): ?>
-            <?php foreach($horariosDisponibles as $horas): ?>
-                <label class="cursor-pointer">
-                    <input type="radio" name="horario" value="<?= $horas['id_horario'] ?>" required class="sr-only peer">
-                    <div class="p-2 text-sm border rounded-md transition-colors peer-checked:bg-sky-200 peer-checked:text-white peer-checked:border-sky-500 hover:bg-gray-300 text-center">
-                        <?= substr($horas['horario'],0,5) ?>
+                    <div class="mt-6 p-6 bg-sky-50 rounded-xl border border-sky-100" id="horariosDisponiblesContainer">
+                        <label class="block text-sm font-bold text-sky-900 mb-4 flex items-center">
+                            <i data-lucide="clock" class="mr-2 h-4 w-4"></i>
+                            Horarios Disponibles
+                        </label>
+                        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                            <?php if(isset($horariosDisponibles) && !empty($horariosDisponibles)): ?>
+                                <?php foreach($horariosDisponibles as $horas): ?>
+                                    <label class="cursor-pointer group">
+                                        <input type="radio" name="horario" value="<?= $horas['id_horario'] ?>" required class="sr-only peer">
+                                        <div class="py-2 px-1 text-sm border border-sky-200 bg-white rounded-lg transition-all peer-checked:bg-sky-500 peer-checked:text-white peer-checked:border-sky-600 peer-checked:shadow-md hover:bg-sky-100 text-center font-medium text-sky-700 group-hover:-translate-y-0.5">
+                                            <?= substr($horas['horario'],0,5) ?>
+                                        </div>
+                                    </label>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="col-span-full text-center py-4">
+                                    <p class="text-gray-500 italic">Por favor, selecciona una fecha y haz clic en "Ver Horarios" para mostrar la disponibilidad.</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                </label>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <div class="mb-1">
-                <p class="text-gray-600">Por favor, selecciona una fecha y haz clic en "Ver Horarios Disponibles" para mostrar los horarios.</p>
-            </div>
-            
-        <?php endif; ?>
-        
-    </div>
-</div>
 
-                    <button type="submit" class="w-full bg-sky-400 hover:bg-sky-500 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors">
+                    <button type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-4 px-6 rounded-xl text-lg transition-all shadow-lg hover:shadow-sky-200 hover:-translate-y-1 mt-4 flex justify-center items-center">
+                        <i data-lucide="check-circle" class="mr-2 h-6 w-6"></i>
                         Finalizar y Pagar Seña
                     </button>
                 </form>
@@ -337,56 +368,66 @@
     </section>
 
     <!-- Ubicación Section (CORREGIDA PARA MOBILE) -->
-    <section id="ubicacion" class="py-20 bg-gray-50">
+    <section id="ubicacion" class="py-24 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Ubicación</h2>
-                <p class="text-xl text-gray-600">Nos encontramos en el corazón de la ciudad</p>
+                <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Ubicación</h2>
+                <p class="text-xl text-gray-600">Nos encontramos en el corazón de la ciudad.</p>
             </div>
 
             <div class="grid lg:grid-cols-2 gap-12">
-                <div class="space-y-8">
-                    <div class="bg-white rounded-lg p-6 border border-gray-200">
-                        <div class="flex items-center space-x-2 mb-4">
-                            <i data-lucide="map-pin" class="h-5 w-5 text-sky-500"></i>
-                            <h3 class="text-lg font-bold">Dirección</h3>
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="p-3 bg-sky-100 rounded-full">
+                                <i data-lucide="map-pin" class="h-6 w-6 text-sky-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900">Dirección</h3>
                         </div>
-                        <p class="text-gray-600">
+                        <p class="text-gray-600 text-lg ml-16">
                             San Martín 1349<br>
                             Centro de San Luis, Argentina<br>
-                            CP 5700
+                            <span class="text-gray-400 text-sm">CP 5700</span>
                         </p>
                     </div>
 
-                    <div class="bg-white rounded-lg p-6 border border-gray-200">
-                        <div class="flex items-center space-x-2 mb-4">
-                            <i data-lucide="clock" class="h-5 w-5 text-sky-500"></i>
-                            <h3 class="text-lg font-bold">Horarios</h3>
+                    <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="p-3 bg-sky-100 rounded-full">
+                                <i data-lucide="clock" class="h-6 w-6 text-sky-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900">Horarios</h3>
                         </div>
-                        <div class="space-y-2 text-gray-600">
-                            <p>Lunes a Viernes: 9:00 - 19:00</p>
-                            <p>Sábados: 9:00 - 18:00</p>
-                            <p>Domingos: Cerrado</p>
+                        <div class="space-y-2 text-gray-600 text-lg ml-16">
+                            <div class="flex justify-between border-b border-gray-50 pb-2"><span>Lunes a Viernes:</span> <span class="font-semibold">9:00 - 19:00</span></div>
+                            <div class="flex justify-between border-b border-gray-50 pb-2"><span>Sábados:</span> <span class="font-semibold">9:00 - 18:00</span></div>
+                            <div class="flex justify-between text-gray-400"><span>Domingos:</span> <span>Cerrado</span></div>
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-lg p-6 border border-gray-200">
-                        <div class="flex items-center space-x-2 mb-4">
-                            <i data-lucide="phone" class="h-5 w-5 text-sky-500"></i>
-                            <h3 class="text-lg font-bold">Contacto</h3>
+                    <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="p-3 bg-sky-100 rounded-full">
+                                <i data-lucide="phone" class="h-6 w-6 text-sky-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900">Contacto</h3>
                         </div>
-                        <div class="space-y-2 text-gray-600">
-                            <p>WhatsApp: +54 266 5044240</p>
-                            <p>Email: info@barbershopelite.com</p>
+                        <div class="space-y-3 ml-16">
+                            <a href="https://wa.me/542665044240" target="_blank" class="flex items-center text-gray-600 hover:text-green-600 transition-colors">
+                                <i data-lucide="message-circle" class="h-5 w-5 mr-2"></i> WhatsApp: +54 266 5044240
+                            </a>
+                            <a href="mailto:info@barbershopelite.com" class="flex items-center text-gray-600 hover:text-sky-600 transition-colors">
+                                <i data-lucide="mail" class="h-5 w-5 mr-2"></i> Email: info@barbershopelite.com
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 <!-- MAPA RESPONSIVE (CLASES TAILWIND) -->
-                <div class="bg-gray-100 rounded-lg p-4 md:p-8 flex items-center justify-center h-[400px] lg:h-auto">
+                <div class="bg-white p-3 rounded-3xl shadow-lg h-[500px] lg:h-auto relative overflow-hidden group">
                     <iframe 
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d162.56753530825245!2d-66.34004509886933!3d-33.29419710494941!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95d4394e45d4846d%3A0x5551a9a0758d5382!2sSan%20Mart%C3%ADn%201349%2C%20D5702%20San%20Luis!5e1!3m2!1ses-419!2sar!4v1759026079809!5m2!1ses-419!2sar" 
-                        class="w-full h-full rounded-lg" 
+                        class="w-full h-full rounded-2xl grayscale group-hover:grayscale-0 transition-all duration-500" 
                         style="border:0;" 
                         allowfullscreen="" 
                         loading="lazy" 
@@ -398,41 +439,48 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-12">
+    <footer class="bg-black text-white py-16 border-t border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-3 gap-8">
-                <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <i data-lucide="scissors" class="h-8 w-8 text-sky-500"></i>
-                        <span class="text-xl font-bold">BarberShop Elite</span>
+            <div class="grid md:grid-cols-4 gap-10 mb-10">
+                <div class="col-span-2">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="p-2 bg-sky-600 rounded-lg">
+                            <i data-lucide="scissors" class="h-6 w-6 text-white"></i>
+                        </div>
+                        <span class="text-2xl font-bold tracking-wide">LeanStyle Barber</span>
                     </div>
-                    <p class="text-gray-300">Tradición, calidad y estilo desde 1995.</p>
+                    <p class="text-gray-400 leading-relaxed max-w-sm">
+                        Más que un corte, una experiencia. Tradición, calidad y estilo desde 1995, adaptándonos a las tendencias modernas para tu mejor imagen.
+                    </p>
                 </div>
 
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">Enlaces Rápidos</h3>
-                    <div class="space-y-2">
-                        <button onclick="scrollToSection('servicios')" class="block text-gray-300 hover:text-sky-600 transition-colors">Servicios</button>
-                        <button onclick="scrollToSection('turnos')" class="block text-gray-300 hover:text-sky-600 transition-colors">Reservar Turno</button>
-                        <button onclick="scrollToSection('ubicacion')" class="block text-gray-300 hover:text-sky-600 transition-colors">Ubicación</button>
-                    </div>
+                    <h3 class="text-lg font-bold mb-6 text-gray-200">Navegación</h3>
+                    <ul class="space-y-3">
+                        <li><button onclick="scrollToSection('servicios')" class="text-gray-400 hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="h-4 w-4 mr-1"></i> Servicios</button></li>
+                        <li><button onclick="scrollToSection('turnos')" class="text-gray-400 hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="h-4 w-4 mr-1"></i> Reservar Turno</button></li>
+                        <li><button onclick="scrollToSection('ubicacion')" class="text-gray-400 hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="h-4 w-4 mr-1"></i> Ubicación</button></li>
+                    </ul>
                 </div>
 
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">Seguime</h3>
+                    <h3 class="text-lg font-bold mb-6 text-gray-200">Síguenos</h3>
                     <div class="flex space-x-4">
-                        <a href="https://www.instagram.com/lean_style01/" target="_blank" class="text-gray-300 hover:text-sky-600 transition-colors">
-                            <i data-lucide="instagram" class="h-6 w-6"></i>
+                        <a href="https://www.instagram.com/lean_style01/" target="_blank" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gradient-to-tr hover:from-yellow-500 hover:via-red-500 hover:to-purple-500 transition-all duration-300 group">
+                            <i data-lucide="instagram" class="h-5 w-5 text-gray-400 group-hover:text-white transition-colors"></i>
                         </a>
-                        <a href="https://www.tiktok.com/@leanbraca" target="_blank" class="text-gray-300 hover:text-sky-600 transition-colors">
-                            <i data-lucide="music" class="h-6 w-6"></i>
+                        <a href="https://www.tiktok.com/@leanbraca" target="_blank" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 group border border-gray-700 hover:border-gray-500">
+                            <i data-lucide="music" class="h-5 w-5 text-gray-400 group-hover:text-white transition-colors"></i>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-                <p class="text-gray-400">© 2025 BarberShop Elite. Todos los derechos reservados.</p>
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                <p>&copy; 2025 LeanStyle Barber. Todos los derechos reservados.</p>
+                <p class="mt-2 md:mt-0 flex items-center">
+                    Desarrollado con <i data-lucide="heart" class="h-3 w-3 mx-1 text-red-500 fill-current"></i> en San Luis
+                </p>
             </div>
         </div>
     </footer>
@@ -443,7 +491,6 @@
         
         function scrollToSection(sectionId) {
             document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
-            // Cerrar menú móvil si está abierto
             document.getElementById('mobile-menu').classList.add('hidden');
         }
 
@@ -452,7 +499,6 @@
             mobileMenu.classList.toggle('hidden');
         }
 
-        // Cerrar menú móvil al hacer clic fuera
         document.addEventListener('click', function(event) {
             const mobileMenu = document.getElementById('mobile-menu');
             const menuButton = event.target.closest('[onclick="toggleMobileMenu()"]');
@@ -461,43 +507,68 @@
                 mobileMenu.classList.add('hidden');
             }
         });
+        
+        document.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (window.scrollY > 50) {
+                navbar.classList.remove('bg-transparent');
+                navbar.classList.add('bg-white/90', 'backdrop-blur-md', 'border-b', 'border-gray-200', 'shadow-sm');
+                
+                if (mobileMenuBtn) mobileMenuBtn.classList.replace('text-white', 'text-gray-800');
+                navLinks.forEach(link => {
+                    link.classList.remove('text-white', 'hover:text-sky-400');
+                    link.classList.add('text-gray-800', 'hover:text-sky-600');
+                });
+                
+                mobileMenu.classList.add('border-t', 'border-gray-100');
+                
+            } else {
+                navbar.classList.add('bg-transparent');
+                navbar.classList.remove('bg-white/90', 'backdrop-blur-md', 'border-b', 'border-gray-200', 'shadow-sm');
+                
+                if (mobileMenuBtn) mobileMenuBtn.classList.replace('text-gray-800', 'text-white');
+                navLinks.forEach(link => {
+                    link.classList.add('text-white', 'hover:text-sky-400');
+                    link.classList.remove('text-gray-800', 'hover:text-sky-600');
+                });
+                
+                mobileMenu.classList.remove('border-t', 'border-gray-100');
+            }
+        });
     </script>
 
     <script>
     const inputFecha = document.getElementById('fecha');
-
-    // Bloquear fechas pasadas
     const hoy = new Date().toISOString().split('T')[0];
     inputFecha.setAttribute('min', hoy);
 
-    // Bloquear domingos
     inputFecha.addEventListener('input', function () {
         const seleccionada = new Date(this.value);
         const diaSemana = seleccionada.getUTCDay(); // 0 = domingo
 
         if (diaSemana === 0) {
             alert("No se atiende los domingos ni se puede seleccionar una fecha pasada, por favor elegí otra fecha.");
-            this.value = ""; // limpia la selección
+            this.value = ""; 
         }
     });
 </script>
 
-<!-- NUEVO SCRIPT PARA AUTO-SCROLL -->
 <script>
     <?php if(isset($fechaSeleccionada) && !empty($fechaSeleccionada)): ?>
-        // Si la variable $fechaSeleccionada existe (es decir, venimos de 'Ver Horarios'),
-        // esperamos un momento a que la página cargue y hacemos scroll a la sección 'turnos'.
         window.addEventListener('load', function() {
             setTimeout(function() {
-                const seccionTurnos = document.getElementById('turnos');
-                if (seccionTurnos) {
-                    seccionTurnos.scrollIntoView({ behavior: 'smooth' });
+                const seccionHorarios = document.getElementById('horariosDisponiblesContainer');
+                if (seccionHorarios) {
+                    seccionHorarios.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
-            }, 100); // 100ms de espera
+            }, 100);
         });
     <?php endif; ?>
 </script>
-<!-- FIN DEL NUEVO SCRIPT -->
 
 </body>
 </html>

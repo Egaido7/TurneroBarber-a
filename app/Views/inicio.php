@@ -94,11 +94,13 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="inicio" class="pt-16 min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-700">
+    <section id="inicio" class="pt-16 min-h-screen flex items-center justify-center bg-black">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             
-            <!-- BLOQUE DE VIDEO-TEXT (Estilo Video Detrás del Texto) -->
-            <div class="relative w-full max-w-5xl h-[300px] md:h-[400px] overflow-hidden rounded-lg mx-auto mb-8 shadow-2xl bg-black">
+            <!-- 
+               BLOQUE DE VIDEO-TEXT CORREGIDO (RESPONSIVE)
+            -->
+            <div class="relative w-full max-w-5xl h-[300px] md:h-[400px] overflow-hidden rounded-lg mx-auto mb-8 shadow-2xl bg-black group">
                 
                 <!-- Capa 1: El Video (Al fondo) -->
                 <video
@@ -106,14 +108,13 @@
                     autoplay loop muted playsinline
                     poster="<?= base_url('src/Imagenes/leanbarber.png') ?>"
                 >
-                    <source src="https://cdn.pixabay.com/video/2021/11/26/94254-638061453_large.mp4" type="video/mp4" />
+                    <source src="<?=base_url('src/Imagenes/videoBarber.mp4') ?>" type="video/mp4" />
                     Tu navegador no soporta el tag de video.
                 </video>
                 
-                <!-- Capa 2: El "Recorte" (Arriba) -->
-                <div class="absolute inset-0 z-10 flex items-center justify-center bg-black mix-blend-multiply">
-                    <h1 class="text-5xl md:text-7xl font-black text-white text-center leading-tight px-4 uppercase tracking-wide">
-                        Creando Estilos,<br> Definiendo Personalidades
+                <div class="absolute inset-0 z-10 flex items-center justify-center bg-black mix-blend-multiply p-4">
+                    <h1 class="text-4xl md:text-7xl font-black text-white text-center leading-snug md:leading-tight uppercase tracking-wide select-none">
+                        Creando Estilos<br> Definiendo Personalidades
                     </h1>
                 </div>
             </div>
@@ -240,18 +241,18 @@
                          <input type="hidden" name="fecha" value="<?= isset($fechaSeleccionada) ? $fechaSeleccionada : '' ?>">
                         <div>
                             <label for="nombre" class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
-                            <input type="text" id="nombre" name="nombre" pattern="^[a-zA-Z\s]+$" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                            <input type="text" id="nombre" name="nombre" pattern = "^[a-zA-Z\s]+$" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
                         </div>
                         <div>
                             <label for="apellido" class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
-                            <input type="text" id="apellido" name="apellido" pattern="^[a-zA-Z\s]+$" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                            <input type="text" id="apellido" name="apellido"  pattern = "^[a-zA-Z\s]+$" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
                         </div>
                     </div>
 
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
                             <label for="telefono" class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
-                            <input type="tel" id="telefono" name="telefono" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                            <input type="tel" id="telefono" name="telefono" required  class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
                         </div>
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
@@ -262,13 +263,11 @@
                     <div>
                         <label for="barbero" class="block text-sm font-medium text-gray-700 mb-2">Barbero</label>
                         
-                        <!-- LÓGICA DE SELECCIÓN DE BARBERO (MODIFICADA) -->
+                        <!-- LÓGICA DE SELECCIÓN DE BARBERO -->
                         <?php if(isset($dataBarberos) && count($dataBarberos) === 1): ?>
                             <!-- Caso: Solo un barbero disponible -->
                             <?php $unicoBarbero = $dataBarberos[0]; ?>
-                            <!-- Input oculto para enviar el ID -->
                             <input type="hidden" name="id_barbero" value="<?= $unicoBarbero['id_barbero'] ?>">
-                            <!-- Input visual de solo lectura con ícono de candado -->
                             <div class="relative">
                                 <input type="text" value="<?= $unicoBarbero['nombre'] ?> <?= $unicoBarbero['apellido'] ?>" readonly class="w-full p-3 border border-gray-300 rounded-md bg-gray-100 text-gray-500 cursor-not-allowed focus:outline-none">
                                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -277,7 +276,7 @@
                             </div>
 
                         <?php else: ?>
-                            <!-- Caso: Múltiples barberos o ninguno (Select normal) -->
+                            <!-- Caso: Múltiples barberos o ninguno -->
                             <select id="barbero" name="id_barbero" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
                                 <option value="">Selecciona un barbero</option>
                                 <?php if(isset($dataBarberos) && !empty($dataBarberos)): ?>
@@ -337,7 +336,7 @@
         </div>
     </section>
 
-    <!-- Ubicación Section -->
+    <!-- Ubicación Section (CORREGIDA PARA MOBILE) -->
     <section id="ubicacion" class="py-20 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
@@ -383,8 +382,16 @@
                     </div>
                 </div>
 
-                <div class="bg-gray-100 rounded-lg p-8 flex items-center justify-center">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d162.56753530825245!2d-66.34004509886933!3d-33.29419710494941!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95d4394e45d4846d%3A0x5551a9a0758d5382!2sSan%20Mart%C3%ADn%201349%2C%20D5702%20San%20Luis!5e1!3m2!1ses-419!2sar!4v1759026079809!5m2!1ses-419!2sar" width="550" height="600" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <!-- MAPA RESPONSIVE (CLASES TAILWIND) -->
+                <div class="bg-gray-100 rounded-lg p-4 md:p-8 flex items-center justify-center h-[400px] lg:h-auto">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d162.56753530825245!2d-66.34004509886933!3d-33.29419710494941!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95d4394e45d4846d%3A0x5551a9a0758d5382!2sSan%20Mart%C3%ADn%201349%2C%20D5702%20San%20Luis!5e1!3m2!1ses-419!2sar!4v1759026079809!5m2!1ses-419!2sar" 
+                        class="w-full h-full rounded-lg" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
                 </div>
             </div>
         </div>

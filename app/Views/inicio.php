@@ -97,6 +97,7 @@
     <section id="inicio" class="pt-16 min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             
+            <!-- BLOQUE DE VIDEO-TEXT (Estilo Video Detrás del Texto) -->
             <div class="relative w-full max-w-5xl h-[300px] md:h-[400px] overflow-hidden rounded-lg mx-auto mb-8 shadow-2xl bg-black">
                 
                 <!-- Capa 1: El Video (Al fondo) -->
@@ -105,18 +106,17 @@
                     autoplay loop muted playsinline
                     poster="<?= base_url('src/Imagenes/leanbarber.png') ?>"
                 >
-                    <source src="<?= base_url('src/Imagenes/videoBarber.mp4') ?>" type="video/mp4" />
+                    <source src="https://cdn.pixabay.com/video/2021/11/26/94254-638061453_large.mp4" type="video/mp4" />
                     Tu navegador no soporta el tag de video.
                 </video>
                 
-                
+                <!-- Capa 2: El "Recorte" (Arriba) -->
                 <div class="absolute inset-0 z-10 flex items-center justify-center bg-black mix-blend-multiply">
                     <h1 class="text-5xl md:text-7xl font-black text-white text-center leading-tight px-4 uppercase tracking-wide">
                         Creando Estilos,<br> Definiendo Personalidades
                     </h1>
                 </div>
             </div>
-            <!-- FIN DEL BLOQUE DE VIDEO-TEXT -->
 
             <!-- Subtítulo y Botón -->
             <p class="text-xl md:text-2xl text-gray-200 mb-8">
@@ -240,30 +240,57 @@
                          <input type="hidden" name="fecha" value="<?= isset($fechaSeleccionada) ? $fechaSeleccionada : '' ?>">
                         <div>
                             <label for="nombre" class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
-                            <input type="text" id="nombre" name="nombre" pattern = "^[a-zA-Z\s]+$" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                            <input type="text" id="nombre" name="nombre" pattern="^[a-zA-Z\s]+$" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
                         </div>
                         <div>
                             <label for="apellido" class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
-                            <input type="text" id="apellido" name="apellido"  pattern = "^[a-zA-Z\s]+$" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                            <input type="text" id="apellido" name="apellido" pattern="^[a-zA-Z\s]+$" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="telefono" class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+                            <input type="tel" id="telefono" name="telefono" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" id="email" name="email" required placeholder="ejemplo@gmail.com" class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
                         </div>
                     </div>
 
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Mail</label>
-                        <input type="email" id="email" name="email" required  class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
-                    </div>
-                    <div>
                         <label for="barbero" class="block text-sm font-medium text-gray-700 mb-2">Barbero</label>
-                        <select id="barbero" name="id_barbero" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
-                            <option value="">Selecciona un barbero</option>
-                            <?php if(isset($dataBarberos) && !empty($dataBarberos)): ?>
-                                <?php foreach($dataBarberos as $barbero): ?>
-                                    <option value="<?= $barbero['id_barbero'] ?>"><?= $barbero['nombre'] ?> <?= $barbero['apellido'] ?></option>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <option value="">No hay barberos disponibles</option>
-                            <?php endif; ?>
-                        </select>
+                        
+                        <!-- LÓGICA DE SELECCIÓN DE BARBERO (MODIFICADA) -->
+                        <?php if(isset($dataBarberos) && count($dataBarberos) === 1): ?>
+                            <!-- Caso: Solo un barbero disponible -->
+                            <?php $unicoBarbero = $dataBarberos[0]; ?>
+                            <!-- Input oculto para enviar el ID -->
+                            <input type="hidden" name="id_barbero" value="<?= $unicoBarbero['id_barbero'] ?>">
+                            <!-- Input visual de solo lectura con ícono de candado -->
+                            <div class="relative">
+                                <input type="text" value="<?= $unicoBarbero['nombre'] ?> <?= $unicoBarbero['apellido'] ?>" readonly class="w-full p-3 border border-gray-300 rounded-md bg-gray-100 text-gray-500 cursor-not-allowed focus:outline-none">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <i data-lucide="lock" class="h-4 w-4 text-gray-400"></i>
+                                </div>
+                            </div>
+
+                        <?php else: ?>
+                            <!-- Caso: Múltiples barberos o ninguno (Select normal) -->
+                            <select id="barbero" name="id_barbero" required class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                                <option value="">Selecciona un barbero</option>
+                                <?php if(isset($dataBarberos) && !empty($dataBarberos)): ?>
+                                    <?php foreach($dataBarberos as $barbero): ?>
+                                        <option value="<?= $barbero['id_barbero'] ?>"><?= $barbero['nombre'] ?> <?= $barbero['apellido'] ?></option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="">No hay barberos disponibles</option>
+                                <?php endif; ?>
+                            </select>
+                        <?php endif; ?>
+                        <!-- FIN LÓGICA DE SELECCIÓN -->
+
                     </div>
 
                     <div>
@@ -451,6 +478,8 @@
 <!-- NUEVO SCRIPT PARA AUTO-SCROLL -->
 <script>
     <?php if(isset($fechaSeleccionada) && !empty($fechaSeleccionada)): ?>
+        // Si la variable $fechaSeleccionada existe (es decir, venimos de 'Ver Horarios'),
+        // esperamos un momento a que la página cargue y hacemos scroll a la sección 'turnos'.
         window.addEventListener('load', function() {
             setTimeout(function() {
                 const seccionTurnos = document.getElementById('turnos');

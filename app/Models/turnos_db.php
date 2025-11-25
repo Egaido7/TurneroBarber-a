@@ -128,6 +128,20 @@ public function eliminarTurno($id_turno){
         return $builder->get()->getResultArray();
     }
 
+    public function getEstadisticasDiariasMes($mes, $anio)
+    {
+        $builder = $this->db->table('turnos t');
+        $builder->select('DAY(t.fecha) as dia, COUNT(t.id_turno) as total_turnos, SUM(s.precio_total) as total_ingresos');
+        $builder->join('servicios s', 't.id_servicio_fk = s.id_servicio');
+        $builder->where('MONTH(t.fecha)', $mes);
+        $builder->where('YEAR(t.fecha)', $anio);
+        $builder->where('t.estado !=', 'cancelado');
+        $builder->groupBy('dia');
+        $builder->orderBy('dia', 'ASC');
+        
+        return $builder->get()->getResultArray();
+    }
+
        public function getTurnoDetalles($id_turno) {
         $builder = $this->db->table('turnos t');
         $builder->select('t.*, c.nombre AS cliente_nombre, c.apellido AS cliente_apellido, c.email AS cliente_email, s.nombre AS servicio_nombre, h.horario AS hora_turno');

@@ -8,22 +8,18 @@ use PhpParser\Node\Expr\AssignOp\Mod;
 
 class Admin extends BaseController
 {  
-       public function dashboard()
+      public function dashboard()
     {
-        // 1. Verificar que el usuario está autenticado
         if (!session()->get('isLoggedIn')) {
             return redirect()->to(site_url('login'));
         }
         
-        // 2. Definir la sección actual
         $section = $this->request->getGet('section') ?? 'turnos';
         
-        // 3. Preparar el array de datos que se enviará a la vista
         $data = [
             'section' => $section
         ];
         
-        // 4. Cargar datos específicos para CADA sección
         if ($section === 'turnos') {
             $fechaSeleccionada = $this->request->getGet('fecha') ?? date('Y-m-d');
             $turnosModel = new Turnos_db();
@@ -37,36 +33,28 @@ class Admin extends BaseController
         } elseif ($section === 'precios') {
             $serviciosModel = new Servicios();
             $data['servicios'] = $serviciosModel->traerServicios();
-        }elseif ($section === 'servicios') {
+
+        } elseif ($section === 'servicios') {
             $serviciosModel = new Servicios();
             $data['servicios'] = $serviciosModel->traerServicios();
-        }elseif ($section === 'estadisticas') {
 
-            // Obtener mes y año de la URL, o usar el mes y año actuales
+        } elseif ($section === 'estadisticas') {
             $mes = $this->request->getGet('mes') ?? date('m');
             $anio = $this->request->getGet('anio') ?? date('Y');
             
             $turnosModel = new Turnos_db();
             
-            // 1. Cargar KPIs (Turnos e Ingresos)
             $data['stats'] = $turnosModel->getEstadisticasMes($mes, $anio);
-            
-            // 2. Cargar Clientes Nuevos
             $data['clientesNuevos'] = $turnosModel->getClientesNuevosMes($mes, $anio);
-            
-            // 3. Cargar Servicios Populares
             $data['serviciosPopulares'] = $turnosModel->getServiciosPopularesMes($mes, $anio);
-            
-            // 4. Cargar Barberos Populares
             $data['barberosPopulares'] = $turnosModel->getBarberosPopularesMes($mes, $anio);
+            
+            // --- ¡DATOS PARA EL GRÁFICO DE LÍNEAS! ---
+            $data['statsDiarias'] = $turnosModel->getEstadisticasDiariasMes($mes, $anio);
 
-            // 5. Pasar el mes/año seleccionado a la vista (para el input)
-            // Formato YYYY-MM
             $data['mesSeleccionado'] = $anio . '-' . str_pad($mes, 2, '0', STR_PAD_LEFT);
         }
-        // ... (aquí irían las otras secciones como 'estadisticas', etc.) ...
 
-        // 5. Cargar la vista principal
         return view('admin/dashboard', $data);
     }
 

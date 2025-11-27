@@ -149,27 +149,6 @@ class Admin extends BaseController
         return redirect()->to(site_url('admin?section=peluqueros'))->with('mensaje', 'Peluquero eliminado con éxito.');
     }
 
-    /**
-     * Placeholder para la lógica de cancelación de turnos
-     */
-    public function cancelarTurno($id_turno = null)
-    {
-        if (!session()->get('isLoggedIn')) {
-            return redirect()->to(site_url('login'));
-        }
-
-        if ($id_turno) {
-            $turnosModel = new Turnos_db();
-            $turnosModel->update($id_turno, ['estado' => 'cancelado']);
-            session()->setFlashdata('mensaje', 'Turno ID ' . $id_turno . ' cancelado correctamente.');
-        } else {
-            session()->setFlashdata('mensaje', 'Error: No se proporcionó ID de turno.');
-        }
-
-        // Redirigir de vuelta a la sección de turnos (y opcionalmente mantener la fecha)
-        $fecha = $this->request->getGet('fecha') ?? date('Y-m-d');
-        return redirect()->to(site_url('admin?section=turnos&fecha=' . $fecha));
-    }
     
 
     public function agregarServicio()

@@ -69,10 +69,7 @@
     </div>
 
     <!-- Modal Agregar Peluquero -->
-    <!-- 
-        CORREGIDO: Eliminado 'class="hidden"' y 'style="display: none;"'. 
-        x-show se encarga de esto.
-    -->
+    
     <div x-show="addModal" @keydown.escape.window="addModal = false" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4" @click.away="addModal = false">
             <h3 class="text-2xl font-bold mb-6">Agregar Peluquero</h3>
@@ -99,9 +96,6 @@
     </div>
 
     <!-- Modal Editar Peluquero -->
-    <!-- 
-        CORREGIDO: Eliminado 'class="hidden"' y 'style="display: none;"'. 
-    -->
     <div x-show="editModal" @keydown.escape.window="editModal = false" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4" @click.away="editModal = false">
             <h3 class="text-2xl font-bold mb-6">Editar Peluquero</h3>
@@ -135,9 +129,7 @@
     </div>
 
     <!-- Modal Eliminar Peluquero -->
-    <!-- 
-        CORREGIDO: Eliminado 'class="hidden"' y 'style="display: none;"'. 
-    -->
+    
     <div x-show="deleteModal" @keydown.escape.window="deleteModal = false" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg p-8 max-w-sm w-full mx-4" @click.away="deleteModal = false">
             <div class="flex items-center space-x-3 mb-4">

@@ -7,96 +7,152 @@ use App\Models\Clientes_db;
 use App\Models\Barberos_db;
 use App\Models\Servicios;
 use App\Models\horariosModel;
-// use Twilio\Rest\Client; // Ya no lo usamos, se puede quitar
+use MercadoPago\SDK;
+use MercadoPago\Item;
+use MercadoPago\Preference;
 
 class Turnos extends BaseController
 {
     /**
-     * Procesa la reserva ORIGINAL del usuario (Alta de turno)
+     * Procesa la reserva y REDIRIGE a Mercado Pago
      */
     public function procesar()
     {
         $clientesModel = new Clientes_db();
         $turnosModel = new Turnos_db();
         $serviciosModel = new Servicios();
-        $horariosModel = new horariosModel();
-        $barberosModel = new Barberos_db(); 
+        // $horariosModel = new horariosModel(); // No se usa aquí estrictamente, pero se puede dejar
 
         try {
-            // 1. Obtener datos
+            // 1. Obtener y guardar Cliente
             $clienteData = [
                 'nombre'   => $this->request->getPost('nombre'),
                 'apellido' => $this->request->getPost('apellido'),
                 'telefono' => $this->request->getPost('telefono'),
                 'email'    => $this->request->getPost('email')
             ];
-            
             $idCliente = $clientesModel->insertarClientes($clienteData);
+            
+            // 2. Generar token
             $token = bin2hex(random_bytes(32)); 
 
+            // 3. Guardar Turno (Estado: pendiente_pago)
             $turnoData = [
                 'fecha'              => $this->request->getPost('fecha'),
                 'id_hora_fk'         => $this->request->getPost('horario'),
-                'estado'             => 'pendiente_pago',
+                'estado'             => 'pendiente_pago', // Esperando a MP
                 'fecha_notificacion' => date('Y-m-d H:i:s'),
-                'estado_msj'         => 'enviado',
+                'estado_msj'         => 'pendiente',
                 'id_cliente_fk'      => $idCliente,
                 'id_servicio_fk'     => $this->request->getPost('id_servicio'),
                 'id_barbero_fk'      => $this->request->getPost('id_barbero'),
                 'token_reprogramar'  => $token
             ];
             
-            $turnosModel->crearTurno($turnoData); 
+            $idTurno = $turnosModel->crearTurno($turnoData); 
 
-            // --- PREPARAR DATOS PARA VISTA Y MAIL ---
+            // 4. Obtener datos del servicio para el cobro
             $servicio = $serviciosModel->find($this->request->getPost('id_servicio'));
-            $horario = $horariosModel->find($this->request->getPost('horario'));
-            $barbero = $barberosModel->traerBarbero($this->request->getPost('id_barbero'));
-            
-            $servicioNombre = $servicio['nombre'] ?? 'Servicio';
-            $fechaTurno = date('d/m/Y', strtotime($this->request->getPost('fecha')));
-            $horaTurno = substr($horario['horario'] ?? '00:00', 0, 5);
-            $barberoNombre = ($barbero['nombre'] ?? '') . ' ' . ($barbero['apellido'] ?? '');
-            
-            session()->setFlashdata('exito', '¡Tu turno fue registrado correctamente! Te enviamos un email con los detalles.');
-            session()->setFlashdata('servicio_nombre', $servicioNombre);
-            session()->setFlashdata('precio_total', $servicio['precio_total']);
-            session()->setFlashdata('monto_seña', $servicio['monto_seña']);
-            session()->setFlashdata('fecha', $this->request->getPost('fecha'));
-            session()->setFlashdata('horario', $horaTurno);
-            session()->setFlashdata('token', $token); 
+            $precioTotal = (float) ($servicio['precio_total'] ?? 0);
+            $nombreServicio = $servicio['nombre'] ?? 'Servicio de Barbería';
 
-            // --- ENVÍO DE EMAIL (CONFIRMACIÓN INICIAL) ---
-            $emailService = \Config\Services::email();
-            // IMPORTANTE: Asegúrate de configurar el SMTP en tu .env
-            $emailService->setFrom('leanstylenegocios@gmail.com', 'LeanBarber Reservas'); 
-            $emailService->setTo($this->request->getPost('email'));
-            $emailService->setSubject('Confirmación de Turno - LeanBarber 💈');
+            // --- INTEGRACIÓN MERCADO PAGO ---
+            // Configura tu Access Token en el archivo .env o pégalo aquí directamente para probar
+            SDK::setAccessToken(getenv('MP_ACCESS_TOKEN')); 
 
-            $mensajeHTML = view('emails/turno_confirmado', [
-                'nombre' => $this->request->getPost('nombre'),
-                'fecha' => $fechaTurno,
-                'hora' => $horaTurno,
-                'servicio' => $servicioNombre,
-                'barbero' => $barberoNombre,
-                'precio' => $servicio['precio_total'],
-                'sena' => $servicio['monto_seña'],
-                'link_reprogramar' => site_url('turnos/cambiar/' . $token)
-            ]);
+            // Crear el ítem de la preferencia
+            $item = new Item();
+            $item->title = "Reserva: " . $nombreServicio;
+            $item->quantity = 1;
+            $item->unit_price = $precioTotal;
 
-            $emailService->setMessage($mensajeHTML);
+            // Crear la preferencia
+            $preference = new Preference();
+            $preference->items = [$item];
             
-            if (!$emailService->send()) {
-                 log_message('error', 'Error enviando email: ' . $emailService->printDebugger(['headers']));
-            }
+            // Configurar urls de retorno (A donde vuelve el usuario)
+            // Usamos localhost si estás en xampp
+            $preference->back_urls = [
+                "success" => site_url('turnos/feedback'),
+                "failure" => site_url('turnos/feedback'),
+                "pending" => site_url('turnos/feedback')
+            ];
+            $preference->auto_return = "approved"; // Vuelve automático si se aprueba
+
+            // Usamos external_reference para saber qué turno estamos pagando cuando vuelva
+            $preference->external_reference = $idTurno;
+
+            $preference->save();
+
+            // Redirigir a la pasarela de pago
+            return redirect()->to($preference->init_point);
+            // --------------------------------
 
         } catch (\Exception $e) {
-            session()->setFlashdata('error', 'Ocurrió un error: ' . $e->getMessage());
+            session()->setFlashdata('error', 'Ocurrió un error al iniciar el pago: ' . $e->getMessage());
+            return redirect()->to(site_url('/')); // O volver al formulario
         }
-        
-        return redirect()->to(site_url('proceso-reserva'));
     }
 
+    /**
+     * Recibe al usuario desde Mercado Pago
+     */
+    public function feedbackPago()
+    {
+        $turnosModel = new Turnos_db();
+        $horariosModel = new horariosModel();
+        
+        // Mercado Pago envía datos por GET
+        $status = $this->request->getGet('status');
+        $idTurno = $this->request->getGet('external_reference'); // El ID que guardamos antes
+
+        if ($status === 'approved' && $idTurno) {
+            
+            // 1. Actualizar estado del turno a CONFIRMADO
+            $turnosModel->update($idTurno, ['estado' => 'confirmado']);
+
+            // 2. Obtener todos los detalles para el mail y la vista
+            $turnoDetalles = $turnosModel->getTurnoDetalles($idTurno);
+            
+            if ($turnoDetalles) {
+                // Preparar datos para Flashdata (Vista de éxito)
+                session()->setFlashdata('exito', '¡Pago recibido! Tu turno ha sido confirmado.');
+                session()->setFlashdata('servicio_nombre', $turnoDetalles['servicio_nombre']);
+                session()->setFlashdata('precio_total', $turnoDetalles['precio_total']);
+                session()->setFlashdata('monto_seña', $turnoDetalles['precio_total']); // Asumiendo pago total o seña
+                session()->setFlashdata('fecha', $turnoDetalles['fecha']);
+                session()->setFlashdata('horario', substr($turnoDetalles['hora_turno'], 0, 5));
+                session()->setFlashdata('token', $turnoDetalles['token_reprogramar']);
+
+                // 3. Enviar el Email (Lo movimos aquí)
+                $emailService = \Config\Services::email();
+                $emailService->setFrom('leanstylenegocios@gmail.com', 'LeanBarber Reservas'); 
+                $emailService->setTo($turnoDetalles['cliente_email']);
+                $emailService->setSubject('Pago Confirmado - Turno LeanBarber 💈');
+
+                $mensajeHTML = view('emails/turno_confirmado', [
+                    'nombre' => $turnoDetalles['cliente_nombre'],
+                    'fecha' => date('d/m/Y', strtotime($turnoDetalles['fecha'])),
+                    'hora' => substr($turnoDetalles['hora_turno'], 0, 5),
+                    'servicio' => $turnoDetalles['servicio_nombre'],
+                    'barbero' => $turnoDetalles['barbero_nombre'], // Asegúrate de que getTurnoDetalles traiga esto
+                    'precio' => $turnoDetalles['precio_total'],
+                    'sena' => $turnoDetalles['precio_total'], // Ojo con esto si es solo seña
+                    'link_reprogramar' => site_url('turnos/cambiar/' . $turnoDetalles['token_reprogramar'])
+                ]);
+
+                $emailService->setMessage($mensajeHTML);
+                $emailService->send();
+            }
+
+            return redirect()->to(site_url('proceso-reserva'));
+
+        } else {
+            // Pago fallido o pendiente
+            session()->setFlashdata('error', 'El pago no se completó o está pendiente. El turno no fue confirmado.');
+            return redirect()->to(site_url('proceso-reserva'));
+        }
+    }
 
     public function resultado()
     {

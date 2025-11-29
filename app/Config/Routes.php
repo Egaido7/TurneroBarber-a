@@ -65,3 +65,6 @@ $routes->get('admin/servicios/eliminar/(:num)', 'Admin::eliminarServicio/$1');
 
 // --- ¡NUEVA RUTA PARA ACTUALIZAR PRECIO! ---
 $routes->post('admin/precios/actualizar/(:num)', 'Admin::actualizarPrecioServicio/$1');
+
+// --- Integración Mercado Pago ---
+$routes->get('turnos/feedback', 'Turnos::feedbackPago');

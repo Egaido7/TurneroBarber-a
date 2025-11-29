@@ -7,23 +7,24 @@ use App\Models\Clientes_db;
 use App\Models\Barberos_db;
 use App\Models\Servicios;
 use App\Models\horariosModel;
-use MercadoPago\SDK;
-use MercadoPago\Item;
-use MercadoPago\Preference;
+use MercadoPago\MercadoPagoConfig;
+use MercadoPago\Client\Preference\PreferenceClient;
+use MercadoPago\Exceptions\MPApiException;
 
 class Turnos extends BaseController
 {
     /**
      * Procesa la reserva y REDIRIGE a Mercado Pago
      */
-    public function procesar()
+   public function procesar()
     {
         $clientesModel = new Clientes_db();
         $turnosModel = new Turnos_db();
         $serviciosModel = new Servicios();
-        // $horariosModel = new horariosModel(); // No se usa aquí estrictamente, pero se puede dejar
 
         try {
+            // ... (Tu lógica de guardado de Cliente y Turno se mantiene igual) ...
+            
             // 1. Obtener y guardar Cliente
             $clienteData = [
                 'nombre'   => $this->request->getPost('nombre'),
@@ -36,11 +37,11 @@ class Turnos extends BaseController
             // 2. Generar token
             $token = bin2hex(random_bytes(32)); 
 
-            // 3. Guardar Turno (Estado: pendiente_pago)
+            // 3. Guardar Turno
             $turnoData = [
                 'fecha'              => $this->request->getPost('fecha'),
                 'id_hora_fk'         => $this->request->getPost('horario'),
-                'estado'             => 'pendiente_pago', // Esperando a MP
+                'estado'             => 'pendiente_pago',
                 'fecha_notificacion' => date('Y-m-d H:i:s'),
                 'estado_msj'         => 'pendiente',
                 'id_cliente_fk'      => $idCliente,
@@ -51,46 +52,51 @@ class Turnos extends BaseController
             
             $idTurno = $turnosModel->crearTurno($turnoData); 
 
-            // 4. Obtener datos del servicio para el cobro
+            // 4. Datos del servicio
             $servicio = $serviciosModel->find($this->request->getPost('id_servicio'));
             $precioTotal = (float) ($servicio['precio_total'] ?? 0);
             $nombreServicio = $servicio['nombre'] ?? 'Servicio de Barbería';
 
-            // --- INTEGRACIÓN MERCADO PAGO ---
-            // Configura tu Access Token en el archivo .env o pégalo aquí directamente para probar
-            SDK::setAccessToken(getenv('MP_ACCESS_TOKEN')); 
-
-            // Crear el ítem de la preferencia
-            $item = new Item();
-            $item->title = "Reserva: " . $nombreServicio;
-            $item->quantity = 1;
-            $item->unit_price = $precioTotal;
-
-            // Crear la preferencia
-            $preference = new Preference();
-            $preference->items = [$item];
+            // --- INTEGRACIÓN MERCADO PAGO V3 ---
             
-            // Configurar urls de retorno (A donde vuelve el usuario)
-            // Usamos localhost si estás en xampp
-            $preference->back_urls = [
-                "success" => site_url('turnos/feedback'),
-                "failure" => site_url('turnos/feedback'),
-                "pending" => site_url('turnos/feedback')
-            ];
-            $preference->auto_return = "approved"; // Vuelve automático si se aprueba
+            // 1. Configurar Token
+            MercadoPagoConfig::setAccessToken(getenv('MP_ACCESS_TOKEN'));
 
-            // Usamos external_reference para saber qué turno estamos pagando cuando vuelva
-            $preference->external_reference = $idTurno;
+            // 2. Crear el Cliente de Preferencias
+            $client = new PreferenceClient();
 
-            $preference->save();
+            // 3. Crear la preferencia usando un ARRAY (ya no new Item)
+            $preference = $client->create([
+                "items" => [
+                    [
+                        "id" => "123", // opcional
+                        "title" => "Reserva: " . $nombreServicio,
+                        "quantity" => 1,
+                        "unit_price" => $precioTotal,
+                        "currency_id" => "ARS" // Asegúrate de poner tu moneda
+                    ]
+                ],
+                "back_urls" => [
+                    "success" => site_url('turnos/feedback'),
+                    "failure" => site_url('turnos/feedback'),
+                    "pending" => site_url('turnos/feedback')
+                ],
+                "auto_return" => "approved",
+                "external_reference" => (string) $idTurno // Convierte a string por seguridad
+            ]);
 
-            // Redirigir a la pasarela de pago
+            // 4. Redirigir (init_point ahora es una propiedad del objeto respuesta)
             return redirect()->to($preference->init_point);
-            // --------------------------------
 
+        } catch (MPApiException $e) {
+            // Manejo específico de errores de Mercado Pago
+            $response = $e->getApiResponse();
+            $content = $response ? $response->getContent() : $e->getMessage();
+            session()->setFlashdata('error', 'Error MP: ' . json_encode($content));
+            return redirect()->to(site_url('/'));
         } catch (\Exception $e) {
-            session()->setFlashdata('error', 'Ocurrió un error al iniciar el pago: ' . $e->getMessage());
-            return redirect()->to(site_url('/')); // O volver al formulario
+            session()->setFlashdata('error', 'Ocurrió un error: ' . $e->getMessage());
+            return redirect()->to(site_url('/'));
         }
     }
 

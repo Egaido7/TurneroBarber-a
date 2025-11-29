@@ -10,21 +10,20 @@
 <body class="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4">
 
     <?php
-        // --- LÓGICA PARA DETECTAR SI ES USUARIO O ADMIN ---
-        // Si existe la variable $token, es un usuario público. Si no, es admin.
         $isUser = isset($token) && !empty($token);
         
         if ($isUser) {
-            // Rutas para el Usuario
             $urlHorarios = site_url('turnos/cambiar/horarios/' . $token);
             $urlGuardar  = site_url('turnos/cambiar/guardar/' . $token);
-            $urlCancelar = site_url('/'); // Vuelve al inicio
+            $urlCancelar = site_url('/');
         } else {
-            // Rutas para el Admin
             $urlHorarios = site_url('admin/turnos/horarios/' . $turno['id_turno']);
             $urlGuardar  = site_url('admin/turnos/reprogramar/' . $turno['id_turno']);
-            $urlCancelar = site_url('admin?section=turnos'); // Vuelve al panel
+            $urlCancelar = site_url('admin?section=turnos'); 
         }
+        
+        // --- CALCULAR FECHA MÁXIMA (30 días) ---
+        $fechaMaxima = date('Y-m-d', strtotime('+30 days'));
     ?>
 
     <div class="max-w-4xl w-full space-y-8">
@@ -34,7 +33,6 @@
             <p class="mt-2 text-lg text-gray-600">Selecciona la nueva fecha y hora para el turno.</p>
         </div>
 
-        <!-- Mensajes de Error/Éxito -->
         <?php if (session()->getFlashdata('error')): ?>
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                 <strong class="font-bold">¡Atención!</strong>
@@ -63,17 +61,19 @@
 
         <!-- Formulario de Reprogramación -->
         <div class="bg-white rounded-lg shadow-md p-8 border border-gray-200">
-            
             <h3 class="text-xl font-bold mb-6">1. Elige la nueva fecha</h3>
             
-            <!-- Formulario 1: Ver Horarios (Url Dinámica) -->
             <form action="<?= $urlHorarios ?>" method="post" class="space-y-6 mb-6">
                 <?= csrf_field() ?>
-                <!-- Si es usuario, necesitamos pasar el token en inputs ocultos o en la URL (ya está en la URL) -->
-                
                 <div>
-                    <label for="fecha" class="block text-sm font-medium text-gray-700 mb-2">Nueva Fecha</label>
-                    <input type="date" id="fecha" name="fecha" value="<?= esc($fechaSeleccionada) ?>" required min="<?= date('Y-m-d') ?>" class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                    <label for="fecha" class="block text-sm font-medium text-gray-700 mb-2">Nueva Fecha (Máx 30 días)</label>
+                    <!-- AÑADIDO EL ATRIBUTO MAX -->
+                    <input type="date" id="fecha" name="fecha" 
+                           value="<?= esc($fechaSeleccionada) ?>" 
+                           required 
+                           min="<?= date('Y-m-d') ?>" 
+                           max="<?= $fechaMaxima ?>" 
+                           class="w-full p-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
                 </div>
                 <button type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-colors">
                     Ver Horarios Disponibles
@@ -82,17 +82,13 @@
 
             <hr class="my-8">
 
-            <!-- Formulario 2: Reprogramar Turno (Url Dinámica) -->
             <h3 class="text-xl font-bold mb-6">2. Confirma el nuevo horario</h3>
             <form action="<?= $urlGuardar ?>" method="POST" class="space-y-6">
                 <?= csrf_field() ?>
                 
-                <!-- Campos ocultos para mantener los datos -->
                 <input type="hidden" name="fecha" value="<?= esc($fechaSeleccionada) ?>">
                 <input type="hidden" name="id_servicio" value="<?= esc($turno['id_servicio_fk']) ?>">
                 <input type="hidden" name="id_barbero" value="<?= esc($turno['id_barbero_fk']) ?>">
-
-                <!-- Input oculto para capturar el texto del horario seleccionado (para el mensaje de éxito) -->
                 <input type="hidden" name="horario_texto" id="horario_texto" value="">
 
                 <div class="mt-4">
@@ -120,7 +116,6 @@
                     Aceptar y Reprogramar
                 </button>
                 
-                <!-- Botón Cancelar (Url Dinámica) -->
                 <a href="<?= $urlCancelar ?>" class="block w-full text-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 px-6 rounded-lg text-lg transition-colors">
                     Cancelar
                 </a>
@@ -128,23 +123,19 @@
         </div>
     </div>
 
-    <!-- Script de restricciones de fecha -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const inputFecha = document.getElementById('fecha');
-
-            // Bloquear fechas pasadas
             const hoy = new Date().toISOString().split('T')[0];
             inputFecha.setAttribute('min', hoy);
 
-            // Bloquear domingos
             inputFecha.addEventListener('input', function () {
                 const seleccionada = new Date(this.value);
-                const diaSemana = seleccionada.getUTCDay(); // 0 = domingo
+                const diaSemana = seleccionada.getUTCDay(); 
 
                 if (diaSemana === 0) {
                     console.warn("No se atiende los domingos.");
-                    this.value = ""; // limpia la selección
+                    this.value = ""; 
                     alert("Lo sentimos, no atendemos los domingos. Por favor selecciona otro día.");
                 }
             });

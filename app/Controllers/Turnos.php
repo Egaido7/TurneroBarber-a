@@ -121,12 +121,24 @@ $diasBloqueadosModel = new DiasBloqueados();
 
     // --- VALIDACIONES PRIVADAS ---
     private function _checkRestriccion12Horas($fechaTurno, $horaTurno) {
+        // Si la hora viene vacía o nula, no podemos validar, así que asumimos TRUE (permitir)
+        // para no bloquear al usuario por error de datos.
+        if (empty($horaTurno)) {
+            return true; 
+        }
+
         $fechaHoraTurno = $fechaTurno . ' ' . $horaTurno; 
         $timestampTurno = strtotime($fechaHoraTurno);
+        
+        // Si strtotime falla, retornamos true para no bloquear
+        if (!$timestampTurno) return true;
+
         $timestampAhora = time(); 
         
         $diferenciaHoras = ($timestampTurno - $timestampAhora) / 3600;
 
+        // Solo bloqueamos si la diferencia es positiva (futuro) pero menor a 12,
+        // o si es negativa (pasado) ya no se puede reprogramar.
         if ($diferenciaHoras < 12) {
             return false;
         }
@@ -157,7 +169,16 @@ $diasBloqueadosModel = new DiasBloqueados();
 
         if (empty($turno)) return redirect()->to(site_url('admin?section=turnos'))->with('mensaje', 'Turno no encontrado.');
 
-        if (!$this->_checkRestriccion12Horas($turno['fecha'], $turno['hora_turno'])) {
+        // --- FIX HORA ---
+        // Si no viene 'hora_turno', la buscamos manualmente usando la FK
+        $horaReal = $turno['hora_turno'] ?? null;
+        if (empty($horaReal) && !empty($turno['id_hora_fk'])) {
+            $horariosModel = new horariosModel();
+            $h = $horariosModel->find($turno['id_hora_fk']);
+            if ($h) $horaReal = $h['horario'];
+        }
+
+        if (!$this->_checkRestriccion12Horas($turno['fecha'], $horaReal)) {
             return redirect()->to(site_url('admin?section=turnos'))
                              ->with('mensaje', 'No se puede reprogramar: Faltan menos de 12 horas para el turno.');
         }
@@ -188,7 +209,7 @@ $diasBloqueadosModel = new DiasBloqueados();
             'turno' => $turno,
             'dataBarberos' => $barberosModel->traerBarberos(),
             'dataServicios' => $serviciosModel->traerServicios(),
-            'horariosDisponibles' => $horariosModel->traerHorariosDisponibles($fecha),
+            'horariosDisponibles' => $horariosModel->HorariosDisponibles($fecha),
             'fechaSeleccionada' => $fecha 
         ];
         return view('reprogramar', $data);
@@ -202,6 +223,14 @@ $diasBloqueadosModel = new DiasBloqueados();
         // Obtenemos datos originales ANTES de actualizar para tener el email
         $turnoOriginal = $turnosModel->getTurnoDetalles($id_turno); 
 
+        // --- FIX HORA ---
+        $horaReal = $turnoOriginal['hora_turno'] ?? null;
+        if (empty($horaReal) && !empty($turnoOriginal['id_hora_fk'])) {
+            $horariosModel = new horariosModel();
+            $h = $horariosModel->find($turnoOriginal['id_hora_fk']);
+            if ($h) $horaReal = $h['horario'];
+        }
+
         try {
             $nuevaFecha = $this->request->getPost('fecha');
             $idNuevoHorario = $this->request->getPost('horario');
@@ -212,10 +241,13 @@ $diasBloqueadosModel = new DiasBloqueados();
                 session()->setFlashdata('error', 'Error: No se puede reprogramar para una fecha pasada.');
                 return redirect()->to(site_url('admin/turnos/reprogramar/' . $id_turno));
             }
-            if (!$this->_checkRestriccion12Horas($turnoOriginal['fecha'], $turnoOriginal['hora_turno'])) {
+            
+            // Usamos $horaReal que calculamos arriba
+            if (!$this->_checkRestriccion12Horas($turnoOriginal['fecha'], $horaReal)) {
                 session()->setFlashdata('error', 'Error: Ya no se puede reprogramar (menos de 12hs).');
                 return redirect()->to(site_url('admin?section=turnos'));
             }
+
             if (!$this->_checkRestriccion30Dias($nuevaFecha)) {
                 session()->setFlashdata('error', 'Error: No puedes agendar con más de 30 días de anticipación.');
                 return redirect()->to(site_url('admin/turnos/reprogramar/' . $id_turno));
@@ -258,7 +290,7 @@ $diasBloqueadosModel = new DiasBloqueados();
 
     // --- FUNCIONES USUARIO PÚBLICO ---
 
-    public function reprogramarUsuario($token = null)
+   public function reprogramarUsuario($token = null)
     {
         if ($token === null) return redirect()->to(site_url('/'));
 
@@ -268,7 +300,14 @@ $diasBloqueadosModel = new DiasBloqueados();
 
         if (empty($turno)) return redirect()->to(site_url('/'))->with('error', 'Link no válido.');
         
-        if (!$this->_checkRestriccion12Horas($turno['fecha'], $turno['hora_turno'])) {
+        // --- FIX HORA ---
+        $horaReal = $turno['hora_turno'] ?? null;
+        if (empty($horaReal) && !empty($turno['id_hora_fk'])) {
+            $h = $horariosModel->find($turno['id_hora_fk']);
+            if ($h) $horaReal = $h['horario'];
+        }
+
+        if (!$this->_checkRestriccion12Horas($turno['fecha'], $horaReal)) {
             return redirect()->to(site_url('/'))
                              ->with('error', 'Lo sentimos, ya no puedes reprogramar este turno porque faltan menos de 12 horas.');
         }
@@ -294,7 +333,7 @@ $diasBloqueadosModel = new DiasBloqueados();
 
         $data = [
             'turno' => $turno,
-            'horariosDisponibles' => $horariosModel->traerHorariosDisponibles($fecha),
+            'horariosDisponibles' => $horariosModel->HorariosDisponibles($fecha),
             'fechaSeleccionada' => $fecha,
             'token' => $token
         ];
@@ -310,6 +349,14 @@ $diasBloqueadosModel = new DiasBloqueados();
 
         if (empty($turnoOriginal)) return redirect()->to(site_url('/'));
 
+        // --- FIX HORA ---
+        $horaReal = $turnoOriginal['hora_turno'] ?? null;
+        if (empty($horaReal) && !empty($turnoOriginal['id_hora_fk'])) {
+            $horariosModel = new horariosModel();
+            $h = $horariosModel->find($turnoOriginal['id_hora_fk']);
+            if ($h) $horaReal = $h['horario'];
+        }
+
         try {
             $nuevaFecha = $this->request->getPost('fecha');
             $idNuevoHorario = $this->request->getPost('horario');
@@ -319,7 +366,8 @@ $diasBloqueadosModel = new DiasBloqueados();
                 session()->setFlashdata('error', 'Error: Fecha debe ser posterior a la original.');
                 return redirect()->to(site_url('turnos/cambiar/' . $token));
             }
-            if (!$this->_checkRestriccion12Horas($turnoOriginal['fecha'], $turnoOriginal['hora_turno'])) {
+            
+            if (!$this->_checkRestriccion12Horas($turnoOriginal['fecha'], $horaReal)) {
                 return redirect()->to(site_url('/'))->with('error', 'Error: Faltan menos de 12 horas.');
             }
             if (!$this->_checkRestriccion30Dias($nuevaFecha)) {

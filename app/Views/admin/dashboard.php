@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración</title>
     <link rel="stylesheet" href="<?= base_url('src/output.css') ?>">
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <link rel="icon" href="<?= base_url('src/Imagenes/leanbarber.png') ?>" type="image/png">
 </head>
 <body class="bg-gray-100 font-sans" x-data="{ sidebarOpen: false }">
@@ -37,6 +36,10 @@
             <a href="<?= site_url('admin?section=precios') ?>" class="flex items-center px-4 py-3 <?= ($section === 'precios') ? 'bg-gray-700' : 'hover:bg-gray-700' ?>">
                 <i data-lucide="dollar-sign" class="h-5 w-5 mr-3"></i> Precios y Señas
             </a>
+            <!-- Nuevo enlace para Días Bloqueados -->
+            <a href="<?= site_url('admin?section=dias_bloqueados') ?>" class="flex items-center px-4 py-3 <?= ($section === 'dias_bloqueados') ? 'bg-gray-700' : 'hover:bg-gray-700' ?>">
+                <i data-lucide="calendar-off" class="h-5 w-5 mr-3"></i> Días Bloqueados
+            </a>
             <a href="<?= site_url('logout') ?>" class="flex items-center px-4 py-3 hover:bg-gray-700 mt-4">
                 <i data-lucide="log-out" class="h-5 w-5 mr-3"></i> Cerrar Sesión
             </a>
@@ -50,18 +53,11 @@
     </div>
 
     <!-- Main Content -->
-    <!-- FIX 1: Añadido 'md:ml-64' para empujar el contenido a la derecha en desktop -->
     <div class="flex flex-col flex-1 md:ml-64">
         
         <!-- Header -->
-        <!-- 
-            FIX 3: Añadido 'px-4' para dar espaciado horizontal en el header móvil.
-            Cambiado 'w-full' por 'w-auto' en md: para que no intente ocupar todo.
-            Añadido z-10 para que esté sobre el contenido pero debajo del sidebar-overlay.
-        -->
         <div class="flex items-center justify-between h-16 bg-white border-b border-gray-200 fixed w-full md:w-auto md:static px-4 z-10">
             <div class="flex items-center">
-                <!-- FIX 3: Añadido 'mr-2' para separar el botón del título -->
                 <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none focus:text-gray-700 md:hidden mr-2">
                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -76,7 +72,6 @@
         </div>
         
         <!-- Content -->
-        <!-- FIX 2: Añadido 'mt-16 md:mt-0' para empujar el contenido hacia abajo en móvil (mt-16 = h-16 del header) -->
         <main class="flex-1 p-6 mt-16 md:mt-0">
             <!-- Mensaje de éxito -->
             <?php if (session()->getFlashdata('mensaje')): ?>
@@ -85,24 +80,37 @@
                 </div>
             <?php endif; ?>
 
+            <!-- Mensaje de error -->
+            <?php if (session()->getFlashdata('error')): ?>
+                <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded" role="alert">
+                    <?= session()->getFlashdata('error') ?>
+                </div>
+            <?php endif; ?>
+
             <!-- Dynamic Content -->
             <?php
                 // Cargar la sección correspondiente
                 if (isset($section)) {
                     // Validar $section para evitar LFI (Local File Inclusion)
-                    $allowedSections = ['turnos', 'servicios', 'peluqueros', 'estadisticas', 'precios'];
+                    // --- AQUÍ ESTABA EL ERROR: Faltaba 'dias_bloqueados' ---
+                    $allowedSections = ['turnos', 'servicios', 'peluqueros', 'estadisticas', 'precios', 'dias_bloqueados'];
+                    
                     if (in_array($section, $allowedSections)) {
-                        echo view('admin/sections/' . $section);
+                        // IMPORTANTE: Pasamos 'get_defined_vars()' para que las variables del controlador ($turnos, $dias, etc.) 
+                        // lleguen a la vista hija. CodeIgniter view() a veces aísla el alcance.
+                        echo view('admin/sections/' . $section, get_defined_vars());
                     } else {
-                        echo view('admin/sections/turnos'); // Vista por defecto si no es válida
+                        // Si la sección no es válida, por defecto cargamos turnos (y necesitamos sus variables por defecto si falla)
+                        echo view('admin/sections/turnos', get_defined_vars()); 
                     }
                 } else {
-                    echo view('admin/sections/turnos'); // Vista por defecto
+                    echo view('admin/sections/turnos', get_defined_vars()); 
                 }
             ?>
         </main>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script>
         lucide.createIcons();

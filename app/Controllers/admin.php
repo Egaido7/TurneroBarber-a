@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Models\Barberos_db;
 use App\Models\Turnos_db;
 use App\Models\Servicios;
+use App\Models\Diasbloqueados;
 use PhpParser\Node\Expr\AssignOp\Mod;
 
 class Admin extends BaseController
@@ -53,6 +54,10 @@ class Admin extends BaseController
             $data['statsDiarias'] = $turnosModel->getEstadisticasDiariasMes($mes, $anio);
 
             $data['mesSeleccionado'] = $anio . '-' . str_pad($mes, 2, '0', STR_PAD_LEFT);
+        }elseif ($section === 'dias_bloqueados') {
+            // --- ¡NUEVA SECCIÓN! ---
+            $diasModel = new Diasbloqueados();
+            $data['dias'] = $diasModel->traerDiasBloqueados();
         }
 
         return view('admin/dashboard', $data);
@@ -210,6 +215,38 @@ class Admin extends BaseController
     }
     public function traerEstadisticas(){}
     
+     public function bloquearDia()
+    {
+        if (!session()->get('isLoggedIn')) return redirect()->to(site_url('login'));
+        
+        $fecha = $this->request->getPost('fecha');
+        $motivo = $this->request->getPost('motivo');
+
+        if ($fecha < date('Y-m-d')) {
+            return redirect()->to(site_url('admin?section=dias_bloqueados'))->with('error', 'No puedes bloquear fechas pasadas.');
+        }
+
+        $diasModel = new DiasBloqueados();
+        
+        // Verificar si ya existe
+        if ($diasModel->where('fecha', $fecha)->first()) {
+            return redirect()->to(site_url('admin?section=dias_bloqueados'))->with('error', 'Esa fecha ya está bloqueada.');
+        }
+
+        $diasModel->insert(['fecha' => $fecha, 'motivo' => $motivo]);
+        
+        return redirect()->to(site_url('admin?section=dias_bloqueados'))->with('mensaje', 'Día bloqueado correctamente.');
+    }
+
+    public function desbloquearDia($id_dia)
+    {
+        if (!session()->get('isLoggedIn')) return redirect()->to(site_url('login'));
+        
+        $diasModel = new DiasBloqueados();
+        $diasModel->delete($id_dia);
+        
+        return redirect()->to(site_url('admin?section=dias_bloqueados'))->with('mensaje', 'Día desbloqueado correctamente.');
+    }
 
 
 }

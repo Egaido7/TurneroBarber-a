@@ -340,6 +340,15 @@
                             <i data-lucide="clock" class="mr-2 h-4 w-4"></i>
                             Horarios Disponibles
                         </label>
+                        <?php if(isset($errorHorario)): ?>
+                            <div class="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-center mb-4">
+                                <div class="flex justify-center mb-2">
+                                    <i data-lucide="calendar-off" class="h-6 w-6"></i>
+                                </div>
+                                <p class="font-bold"><?= $errorHorario ?></p>
+                                <p class="text-sm mt-1">Por favor selecciona otra fecha. Este día está bloqueado.</p>
+                            </div>
+                        <?php endif; ?>
                         <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                             <?php if(isset($horariosDisponibles) && !empty($horariosDisponibles)): ?>
                                 <?php foreach($horariosDisponibles as $horas): ?>

@@ -68,3 +68,7 @@ $routes->post('admin/precios/actualizar/(:num)', 'Admin::actualizarPrecioServici
 
 // --- Integración Mercado Pago ---
 $routes->get('turnos/feedback', 'Turnos::feedbackPago');
+
+// --- CRUD Días Bloqueados (Admin) ---
+$routes->post('admin/dias/bloquear', 'Admin::bloquearDia');
+$routes->get('admin/dias/desbloquear/(:num)', 'Admin::desbloquearDia/$1');

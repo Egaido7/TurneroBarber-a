@@ -300,25 +300,20 @@
                     <div class="grid md:grid-cols-2 gap-6">
                         <div class="relative group">
                             <label for="nombre" class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
-                            <input type="text" id="nombre" name="nombre" pattern="^[a-zA-Z\s]+$" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#c8a951] focus:border-[#c8a951] transition-all shadow-sm group-hover:border-gray-400" placeholder="Tu nombre">
+                            <input type="text" id="nombre" name="nombre" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{2,30}" title="El nombre debe tener entre 2 y 30 letras." required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#c8a951] focus:border-[#c8a951] transition-all shadow-sm group-hover:border-gray-400" placeholder="Tu nombre">
                             <i data-lucide="user" class="absolute left-3 top-[38px] h-5 w-5 text-gray-400"></i>
                         </div>
                         <div class="relative group">
                             <label for="apellido" class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
-                            <input type="text" id="apellido" name="apellido" pattern="^[a-zA-Z\s]+$" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#c8a951] focus:border-[#c8a951] transition-all shadow-sm group-hover:border-gray-400" placeholder="Tu apellido">
+                            <input type="text" id="apellido" name="apellido" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{2,30}" title="El apellido debe tener entre 2 y 30 letras."  required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#c8a951] focus:border-[#c8a951] transition-all shadow-sm group-hover:border-gray-400" placeholder="Tu apellido">
                             <i data-lucide="user" class="absolute left-3 top-[38px] h-5 w-5 text-gray-400"></i>
                         </div>
                     </div>
 
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="relative group">
-                            <label for="telefono" class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
-                            <input type="tel" id="telefono" name="telefono" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#c8a951] focus:border-[#c8a951] transition-all shadow-sm group-hover:border-gray-400" placeholder="Ej: 11 1234 5678">
-                            <i data-lucide="phone" class="absolute left-3 top-[38px] h-5 w-5 text-gray-400"></i>
-                        </div>
+                    <div class="grid md:grid-cols-1 gap-6">
                         <div class="relative group">
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input type="email" id="email" name="email" required placeholder="ejemplo@gmail.com" class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#c8a951] focus:border-[#c8a951] transition-all shadow-sm group-hover:border-gray-400">
+                            <input type="email" id="email" name="email" pattern="[a-zA-Z0-9._%+-]+@(gmail|yahoo|hotmail)\.(com|ar)" title="El correo debe ser Gmail, Yahoo o Hotmail."required placeholder="ejemplo@gmail.com" class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#c8a951] focus:border-[#c8a951] transition-all shadow-sm group-hover:border-gray-400">
                             <i data-lucide="mail" class="absolute left-3 top-[38px] h-5 w-5 text-gray-400"></i>
                         </div>
                     </div>

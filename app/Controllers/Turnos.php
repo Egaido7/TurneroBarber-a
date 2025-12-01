@@ -14,36 +14,37 @@ use MercadoPago\Exceptions\MPApiException;
 
 class Turnos extends BaseController
 {
-    /**
+      /**
      * Procesa la reserva y REDIRIGE a Mercado Pago
      */
-   public function procesar()
+    public function procesar()
     {
         $clientesModel = new Clientes_db();
         $turnosModel = new Turnos_db();
         $serviciosModel = new Servicios();
         $diasBloqueadosModel = new DiasBloqueados();
+
         try {
             $fecha = $this->request->getPost('fecha'); 
             
-            // Asumiendo que tienes el método esDiaBloqueado en tu modelo DiasBloqueados
+            // Verificación de día bloqueado
             if ($diasBloqueadosModel->esDiaBloqueado($fecha)) {
                 session()->setFlashdata('error', 'Error: La fecha seleccionada no está disponible para turnos.');
                 return redirect()->to(site_url('/')); 
             }
 
-            // --- VALIDACIÓN 2: CONTROL DE HORARIO VACÍO (Fix del error null) ---
+            // --- VALIDACIÓN 2: CONTROL DE HORARIO VACÍO ---
             $idHorario = $this->request->getPost('horario');
             
             if (empty($idHorario)) {
                 session()->setFlashdata('error', 'Por favor, selecciona un horario disponible antes de continuar.');
-                return redirect()->to(site_url('/')); // Volvemos al inicio para que elija bien
+                return redirect()->to(site_url('/'));
             }
+
             // 1. Obtener y guardar Cliente
             $clienteData = [
                 'nombre'   => $this->request->getPost('nombre'),
                 'apellido' => $this->request->getPost('apellido'),
-                'telefono' => $this->request->getPost('telefono'),
                 'email'    => $this->request->getPost('email')
             ];
             $idCliente = $clientesModel->insertarClientes($clienteData);
@@ -69,47 +70,63 @@ class Turnos extends BaseController
             // 4. Datos del servicio
             $servicio = $serviciosModel->find($this->request->getPost('id_servicio'));
             $precioTotal = (float) ($servicio['precio_total'] ?? 0);
+            $precioSenia = (float) ($servicio['monto_seña'] ?? 0);
             $nombreServicio = $servicio['nombre'] ?? 'Servicio de Barbería';
 
             // --- INTEGRACIÓN MERCADO PAGO V3 ---
             
-            // 1. Configurar Token
+            // 1. Configurar Token (Asegúrate que MP_ACCESS_TOKEN esté en tu .env)
             MercadoPagoConfig::setAccessToken(getenv('MP_ACCESS_TOKEN'));
 
             // 2. Crear el Cliente de Preferencias
             $client = new PreferenceClient();
 
-            // 3. Crear la preferencia usando un ARRAY (ya no new Item)
+            // FIX: Aseguramos que la URL sea absoluta y apunte al método correcto
+            // Si base_url() no está configurada, esto podría fallar. Ver nota al final.
+            $backUrlSuccess = base_url('turnos/feedbackPago');
+            $backUrlFailure = base_url('turnos/feedbackPago');
+            $backUrlPending = base_url('turnos/feedbackPago');
+
+            // 3. Crear la preferencia
             $preference = $client->create([
                 "items" => [
                     [
-                        "id" => "123", // opcional
+                        "id" => (string) ($servicio['id'] ?? '123'), // Puedes usar $servicio['id']
                         "title" => "Reserva: " . $nombreServicio,
                         "quantity" => 1,
-                        "unit_price" => $precioTotal,
-                        "currency_id" => "ARS" // Asegúrate de poner tu moneda
+                        "unit_price" => $precioSenia,
+                        "currency_id" => "ARS"
                     ]
                 ],
                 "back_urls" => [
-                    "success" => site_url('turnos/feedback'),
-                    "failure" => site_url('turnos/feedback'),
-                    "pending" => site_url('turnos/feedback')
+                    "success" => $backUrlSuccess,
+                    "failure" => $backUrlFailure,
+                    "pending" => $backUrlPending
                 ],
                 "auto_return" => "approved",
-                "external_reference" => (string) $idTurno // Convierte a string por seguridad
+                "external_reference" => (string) $idTurno
             ]);
 
-            // 4. Redirigir (init_point ahora es una propiedad del objeto respuesta)
+            // 4. Redirigir a Mercado Pago
             return redirect()->to($preference->init_point);
 
         } catch (MPApiException $e) {
-            // Manejo específico de errores de Mercado Pago
+            // Capturamos la respuesta detallada de Mercado Pago
             $response = $e->getApiResponse();
             $content = $response ? $response->getContent() : $e->getMessage();
-            session()->setFlashdata('error', 'Error MP: ' . json_encode($content));
+            
+            // 1. Logueamos el error técnico para que tú lo veas en 'writable/logs'
+            log_message('error', 'MERCADO PAGO ERROR: ' . json_encode($content));
+            
+            // 2. Mensaje amigable para el usuario
+            session()->setFlashdata('error', 'Hubo un problema al comunicarse con la pasarela de pagos. Por favor, verifica tu conexión o intenta más tarde.');
             return redirect()->to(site_url('/'));
+
         } catch (\Exception $e) {
-            session()->setFlashdata('error', 'Ocurrió un error: ' . $e->getMessage());
+            // Error general no relacionado con MP
+            log_message('error', 'ERROR GENERAL TURNOS: ' . $e->getMessage());
+            
+            session()->setFlashdata('error', 'Ocurrió un error inesperado al procesar la solicitud.');
             return redirect()->to(site_url('/'));
         }
     }
@@ -124,7 +141,7 @@ class Turnos extends BaseController
         
         // Mercado Pago envía datos por GET
         $status = $this->request->getGet('status');
-        $idTurno = $this->request->getGet('external_reference'); // El ID que guardamos antes
+        $idTurno = $this->request->getGet('external_reference');
 
         if ($status === 'approved' && $idTurno) {
             
@@ -139,13 +156,14 @@ class Turnos extends BaseController
                 session()->setFlashdata('exito', '¡Pago recibido! Tu turno ha sido confirmado.');
                 session()->setFlashdata('servicio_nombre', $turnoDetalles['servicio_nombre']);
                 session()->setFlashdata('precio_total', $turnoDetalles['precio_total']);
-                session()->setFlashdata('monto_seña', $turnoDetalles['precio_total']); // Asumiendo pago total o seña
+                session()->setFlashdata('monto_seña', $turnoDetalles['precio_total']);
                 session()->setFlashdata('fecha', $turnoDetalles['fecha']);
                 session()->setFlashdata('horario', substr($turnoDetalles['hora_turno'], 0, 5));
                 session()->setFlashdata('token', $turnoDetalles['token_reprogramar']);
 
-                // 3. Enviar el Email (Lo movimos aquí)
+                // 3. Enviar el Email
                 $emailService = \Config\Services::email();
+                // OJO: Configura tu email real en app/Config/Email.php o .env
                 $emailService->setFrom('leanstylenegocios@gmail.com', 'LeanBarber Reservas'); 
                 $emailService->setTo($turnoDetalles['cliente_email']);
                 $emailService->setSubject('Pago Confirmado - Turno LeanBarber 💈');
@@ -155,9 +173,9 @@ class Turnos extends BaseController
                     'fecha' => date('d/m/Y', strtotime($turnoDetalles['fecha'])),
                     'hora' => substr($turnoDetalles['hora_turno'], 0, 5),
                     'servicio' => $turnoDetalles['servicio_nombre'],
-                    'barbero' => $turnoDetalles['barbero_nombre'], // Asegúrate de que getTurnoDetalles traiga esto
+                    'barbero' => $turnoDetalles['barbero_nombre'], 
                     'precio' => $turnoDetalles['precio_total'],
-                    'sena' => $turnoDetalles['precio_total'], // Ojo con esto si es solo seña
+                    'sena' => $turnoDetalles['precio_total'],
                     'link_reprogramar' => site_url('turnos/cambiar/' . $turnoDetalles['token_reprogramar'])
                 ]);
 

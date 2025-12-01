@@ -44,7 +44,7 @@ class Home extends BaseController
         } else {
             // Si está libre, buscamos los horarios normalmente
             $horariosModel = new horariosModel();
-            $data['horariosDisponibles'] = $horariosModel->traerHorariosDisponibles($fecha);
+            $data['horariosDisponibles'] = $horariosModel->HorariosDisponibles($fecha);
         }
 
         return view('inicio', $data);

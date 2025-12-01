@@ -7,6 +7,7 @@ use App\Models\Clientes_db;
 use App\Models\Barberos_db;
 use App\Models\Servicios;
 use App\Models\horariosModel;
+use App\Models\DiasBloqueados;
 use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\Exceptions\MPApiException;
@@ -21,10 +22,23 @@ class Turnos extends BaseController
         $clientesModel = new Clientes_db();
         $turnosModel = new Turnos_db();
         $serviciosModel = new Servicios();
-
+        $diasBloqueadosModel = new DiasBloqueados();
         try {
-            // ... (Tu lógica de guardado de Cliente y Turno se mantiene igual) ...
+            $fecha = $this->request->getPost('fecha'); 
             
+            // Asumiendo que tienes el método esDiaBloqueado en tu modelo DiasBloqueados
+            if ($diasBloqueadosModel->esDiaBloqueado($fecha)) {
+                session()->setFlashdata('error', 'Error: La fecha seleccionada no está disponible para turnos.');
+                return redirect()->to(site_url('/')); 
+            }
+
+            // --- VALIDACIÓN 2: CONTROL DE HORARIO VACÍO (Fix del error null) ---
+            $idHorario = $this->request->getPost('horario');
+            
+            if (empty($idHorario)) {
+                session()->setFlashdata('error', 'Por favor, selecciona un horario disponible antes de continuar.');
+                return redirect()->to(site_url('/')); // Volvemos al inicio para que elija bien
+            }
             // 1. Obtener y guardar Cliente
             $clienteData = [
                 'nombre'   => $this->request->getPost('nombre'),

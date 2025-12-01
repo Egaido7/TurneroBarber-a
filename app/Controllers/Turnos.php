@@ -6,6 +6,7 @@ use App\Models\Turnos_db;
 use App\Models\Clientes_db;
 use App\Models\Barberos_db;
 use App\Models\Servicios;
+use App\Models\DiasBloqueados;
 use App\Models\horariosModel;
 // use Twilio\Rest\Client; // Ya no lo usamos, se puede quitar
 
@@ -21,8 +22,23 @@ class Turnos extends BaseController
         $serviciosModel = new Servicios();
         $horariosModel = new horariosModel();
         $barberosModel = new Barberos_db(); 
-
+$diasBloqueadosModel = new DiasBloqueados();
         try {
+            $fecha = $this->request->getPost('fecha'); 
+            
+            // Asumiendo que tienes el método esDiaBloqueado en tu modelo DiasBloqueados
+            if ($diasBloqueadosModel->esDiaBloqueado($fecha)) {
+                session()->setFlashdata('error', 'Error: La fecha seleccionada no está disponible para turnos.');
+                return redirect()->to(site_url('/')); 
+            }
+
+            // --- VALIDACIÓN 2: CONTROL DE HORARIO VACÍO (Fix del error null) ---
+            $idHorario = $this->request->getPost('horario');
+            
+            if (empty($idHorario)) {
+                session()->setFlashdata('error', 'Por favor, selecciona un horario disponible antes de continuar.');
+                return redirect()->to(site_url('/')); // Volvemos al inicio para que elija bien
+            }
             // 1. Obtener datos
             $clienteData = [
                 'nombre'   => $this->request->getPost('nombre'),

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LeanBarber Arg</title>
         <link rel="stylesheet" href="<?= base_url('src/output.css') ?>">
-        <link rel="icon" href="<?= base_url('src/Imagenes/leanbarber.png') ?>" type="image/png">
+        <link rel="icon" href="<?= base_url('src/Imagenes/logoinicial.png') ?>" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css">
     
 </head>
@@ -42,24 +42,23 @@
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center space-x-2">
                     <a href="<?= base_url('/') ?>">
-                        <img src="<?= base_url('src/imagenes/logoinicial.png') ?>" alt="" style="width: 6.5em; height: 6.5em;">
+                        <img src="<?= base_url('src/imagenes/logoinicial.png') ?>" alt="" style="width: 4.5em; height: 4.5em;">
                     </a>
-                    <span class="text-xl font-bold text-sky-500 tracking-tight">LeanBarber</span>
                 </div>
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <button onclick="scrollToSection('inicio')" class="nav-link text-white hover:text-sky-400 transition-colors font-medium text-sm tracking-wide uppercase">Inicio</button>
-                    <button onclick="scrollToSection('historia')" class="nav-link text-white hover:text-sky-400 transition-colors font-medium text-sm tracking-wide uppercase">Historia</button>
-                    <button onclick="scrollToSection('servicios')" class="nav-link text-white hover:text-sky-400 transition-colors font-medium text-sm tracking-wide uppercase">Servicios</button>
-                    <button onclick="scrollToSection('turnos')" class="nav-link text-white hover:text-sky-400 transition-colors font-medium text-sm tracking-wide uppercase">Sacar Turno</button>
-                    <button onclick="scrollToSection('ubicacion')" class="nav-link text-white hover:text-sky-400 transition-colors font-medium text-sm tracking-wide uppercase">Ubicación</button>
+                    <button onclick="scrollToSection('inicio')" class="nav-link text-white hover:text-[#c8a951] transition-colors font-medium text-sm tracking-wide uppercase">Inicio</button>
+                    <button onclick="scrollToSection('historia')" class="nav-link text-white hover:text-[#c8a951] transition-colors font-medium text-sm tracking-wide uppercase">Historia</button>
+                    <button onclick="scrollToSection('servicios')" class="nav-link text-white hover:text-[#c8a951] transition-colors font-medium text-sm tracking-wide uppercase">Servicios</button>
+                    <button onclick="scrollToSection('turnos')" class="nav-link text-white hover:text-[#c8a951] transition-colors font-medium text-sm tracking-wide uppercase">Sacar Turno</button>
+                    <button onclick="scrollToSection('ubicacion')" class="nav-link text-white hover:text-[#c8a951] transition-colors font-medium text-sm tracking-wide uppercase">Ubicación</button>
                     
                     <div class="flex items-center space-x-4 border-l border-white/20 pl-6">
-                        <a href="https://www.instagram.com/lean_style01/" target="_blank" class="nav-link text-white hover:text-sky-400 transition-transform hover:scale-110 duration-200">
+                        <a href="https://www.instagram.com/lean_style01/" target="_blank" class="nav-link text-white hover:text-[#c8a951] transition-transform hover:scale-110 duration-200">
                             <i data-lucide="instagram" class="h-5 w-5"></i>
                         </a>
-                        <a href="https://www.tiktok.com/@leanbraca" target="_blank" class="nav-link text-white hover:text-sky-400 transition-transform hover:scale-110 duration-200">
+                        <a href="https://www.tiktok.com/@leanbraca" target="_blank" class="nav-link text-white hover:text-[#c8a951] transition-transform hover:scale-110 duration-200">
                             <i data-lucide="music" class="h-5 w-5"></i>
                         </a>
                     </div>
@@ -67,7 +66,7 @@
 
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden">
-                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="text-white hover:text-sky-400 transition-colors">
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="text-white hover:text-[#c8a951] transition-colors">
                         <i data-lucide="menu" class="h-6 w-6"></i>
                     </button>
                 </div>
@@ -76,16 +75,16 @@
             <!-- Mobile Menu -->
             <div id="mobile-menu" class="hidden md:hidden pb-4 bg-white rounded-b-lg shadow-xl absolute left-0 right-0 top-16 border-t border-gray-100">
                 <div class="flex flex-col space-y-2 px-4 pt-2">
-                    <button onclick="scrollToSection('inicio')" class="text-left text-gray-800 hover:text-sky-600 hover:bg-gray-50 rounded-md px-3 py-2 transition-colors font-medium">Inicio</button>
-                    <button onclick="scrollToSection('historia')" class="text-left text-gray-800 hover:text-sky-600 hover:bg-gray-50 rounded-md px-3 py-2 transition-colors font-medium">Nuestra Historia</button>
-                    <button onclick="scrollToSection('servicios')" class="text-left text-gray-800 hover:text-sky-600 hover:bg-gray-50 rounded-md px-3 py-2 transition-colors font-medium">Servicios</button>
-                    <button onclick="scrollToSection('turnos')" class="text-left text-gray-800 hover:text-sky-600 hover:bg-gray-50 rounded-md px-3 py-2 transition-colors font-medium">Sacar Turno</button>
-                    <button onclick="scrollToSection('ubicacion')" class="text-left text-gray-800 hover:text-sky-600 hover:bg-gray-50 rounded-md px-3 py-2 transition-colors font-medium">Ubicación</button>
+                    <button onclick="scrollToSection('inicio')" class="text-left text-gray-800 hover:text-[#c8a951] hover:bg-[#c8a951]/10 rounded-md px-3 py-2 transition-colors font-medium">Inicio</button>
+                    <button onclick="scrollToSection('historia')" class="text-left text-gray-800 hover:text-[#c8a951] hover:bg-[#c8a951]/10 rounded-md px-3 py-2 transition-colors font-medium">Nuestra Historia</button>
+                    <button onclick="scrollToSection('servicios')" class="text-left text-gray-800 hover:text-[#c8a951] hover:bg-[#c8a951]/10 rounded-md px-3 py-2 transition-colors font-medium">Servicios</button>
+                    <button onclick="scrollToSection('turnos')" class="text-left text-gray-800 hover:text-[#c8a951] hover:bg-[#c8a951]/10 rounded-md px-3 py-2 transition-colors font-medium">Sacar Turno</button>
+                    <button onclick="scrollToSection('ubicacion')" class="text-left text-gray-800 hover:text-[#c8a951] hover:bg-[#c8a951]/10 rounded-md px-3 py-2 transition-colors font-medium">Ubicación</button>
                     <div class="flex items-center space-x-6 py-4 justify-center border-t border-gray-100 mt-2">
-                        <a href="https://www.instagram.com/lean_style01/" target="_blank" class="text-gray-800 hover:text-sky-600 transition-colors">
+                        <a href="https://www.instagram.com/lean_style01/" target="_blank" class="text-gray-800 hover:text-[#c8a951] transition-colors">
                             <i data-lucide="instagram" class="h-6 w-6"></i>
                         </a>
-                        <a href="https://www.tiktok.com/@leanbraca" target="_blank" class="text-gray-800 hover:text-sky-600 transition-colors">
+                        <a href="https://www.tiktok.com/@leanbraca" target="_blank" class="text-gray-800 hover:text-[#c8a951] transition-colors">
                             <i data-lucide="music" class="h-6 w-6"></i>
                         </a>
                     </div>
@@ -102,7 +101,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             
             <!-- BLOQUE DE VIDEO-TEXT -->
-            <div class="relative w-full max-w-5xl h-[300px] md:h-[400px] overflow-hidden rounded-2xl mx-auto mb-8 shadow-2xl shadow-sky-900/20 bg-black group transition-transform duration-500 hover:scale-[1.01]">
+            <div class="relative w-full max-w-5xl h-[300px] md:h-[400px] overflow-hidden rounded-2xl mx-auto mb-8 shadow-2xl shadow-[#c8a951]/20 bg-black group transition-transform duration-500 hover:scale-[1.01]">
                 
                 <!-- Capa 1: El Video -->
                 <video
@@ -126,8 +125,8 @@
             <p class="text-xl md:text-2xl text-gray-300 mb-10 font-light tracking-wide">
                 Estilo impecable, atención al milímetro. Trabajando tu imagen desde 2020.
             </p>
-            <!-- Botón Mejorado: Sombra resplandeciente y efecto hover -->
-            <button onclick="scrollToSection('turnos')" class="group relative bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 px-10 rounded-full text-lg transition-all duration-300 shadow-[0_0_20px_rgba(14,165,233,0.5)] hover:shadow-[0_0_30px_rgba(14,165,233,0.8)] hover:-translate-y-1">
+            <!-- Botón Mejorado -->
+            <button onclick="scrollToSection('turnos')" class="group relative bg-[#c8a951] hover:bg-[#b09344] text-white font-bold py-4 px-10 rounded-full text-lg transition-all duration-300 shadow-[0_0_20px_rgba(200,169,81,0.5)] hover:shadow-[0_0_30px_rgba(200,169,81,0.8)] hover:-translate-y-1">
                 <span class="flex items-center">
                     Reservar Turno
                     <i data-lucide="calendar-check" class="ml-2 h-5 w-5 group-hover:rotate-12 transition-transform"></i>
@@ -142,7 +141,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Nuestra Historia</h2>
-                <div class="w-24 h-1 bg-sky-500 mx-auto rounded-full mb-6"></div>
+                <div class="w-24 h-1 bg-[#c8a951] mx-auto rounded-full mb-6"></div>
                 <p class="text-xl text-gray-600 max-w-2xl mx-auto">
                     Una tradición familiar que comenzó en 1995 y continúa evolucionando con los tiempos.
                 </p>
@@ -151,32 +150,32 @@
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div class="space-y-8">
                     <!-- Tarjetas con efecto Hover -->
-                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-x-1 hover:border-sky-200 group">
+                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-x-1 hover:border-[#c8a951]/40 group">
                         <div class="flex items-center space-x-3 mb-3">
-                            <div class="w-3 h-3 bg-gray-300 group-hover:bg-sky-500 rounded-full transition-colors"></div>
+                            <div class="w-3 h-3 bg-gray-300 group-hover:bg-[#c8a951] rounded-full transition-colors"></div>
                             <h3 class="text-lg font-bold text-gray-800">2020 - Los Inicios</h3>
                         </div>
-                        <p class="text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-100 group-hover:border-sky-100 transition-colors">
+                        <p class="text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-100 group-hover:border-[#c8a951]/40 transition-colors">
                             Don Carlos abrió las puertas de su primera barbería con una visión clara: ofrecer el mejor servicio de corte y afeitado de la ciudad.
                         </p>
                     </div>
 
-                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-x-1 hover:border-sky-200 group">
+                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-x-1 hover:border-[#c8a951]/40 group">
                         <div class="flex items-center space-x-3 mb-3">
-                            <div class="w-3 h-3 bg-gray-300 group-hover:bg-sky-500 rounded-full transition-colors"></div>
+                            <div class="w-3 h-3 bg-gray-300 group-hover:bg-[#c8a951] rounded-full transition-colors"></div>
                             <h3 class="text-lg font-bold text-gray-800">2022 - Expansión</h3>
                         </div>
-                        <p class="text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-100 group-hover:border-sky-100 transition-colors">
+                        <p class="text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-100 group-hover:border-[#c8a951]/40 transition-colors">
                             La segunda generación se suma al negocio familiar, incorporando técnicas modernas sin perder la esencia tradicional.
                         </p>
                     </div>
 
-                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-x-1 hover:border-sky-200 group">
+                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-x-1 hover:border-[#c8a951]/40 group">
                         <div class="flex items-center space-x-3 mb-3">
-                            <div class="w-3 h-3 bg-sky-500 rounded-full shadow-sm shadow-sky-500/50"></div>
+                            <div class="w-3 h-3 bg-[#c8a951] rounded-full shadow-sm shadow-[#c8a951]/50"></div>
                             <h3 class="text-lg font-bold text-gray-800">2025 - Presente</h3>
                         </div>
-                        <p class="text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-100 group-hover:border-sky-100 transition-colors">
+                        <p class="text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-100 group-hover:border-[#c8a951]/40 transition-colors">
                             Hoy somos referentes en la ciudad, combinando la experiencia de décadas con las últimas tendencias en barbería masculina.
                         </p>
                     </div>
@@ -184,7 +183,7 @@
 
                 <div class="bg-gray-50 rounded-2xl p-10 text-center border border-gray-100 shadow-inner">
                     <div class="w-32 h-32 bg-gray-900 rounded-full mx-auto mb-6 flex items-center justify-center shadow-xl shadow-gray-500/20">
-                        <i data-lucide="scissors" class="h-14 w-14 text-sky-400"></i>
+                        <i data-lucide="scissors" class="h-14 w-14 text-[#c8a951]"></i>
                     </div>
                     <h3 class="text-3xl font-bold text-gray-900 mb-2">15,000+</h3>
                     <p class="text-lg text-gray-600 font-medium">Cortes Realizados</p>
@@ -210,12 +209,12 @@
                 <!-- Card de Servicio Mejorada -->
                 <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-default">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="p-3 bg-sky-50 rounded-lg group-hover:bg-sky-100 transition-colors">
-                            <i data-lucide="star" class="h-6 w-6 text-sky-500"></i>
+                        <div class="p-3 bg-[#c8a951]/10 rounded-lg group-hover:bg-[#c8a951]/20 transition-colors">
+                            <i data-lucide="star" class="h-6 w-6 text-[#c8a951]"></i>
                         </div>
-                        <span class="text-2xl font-bold text-sky-600">$<?= number_format($service['precio_total'], 0, ',', '.') ?></span>
+                        <span class="text-2xl font-bold text-[#c8a951]">$<?= number_format($service['precio_total'], 0, ',', '.') ?></span>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-sky-600 transition-colors"><?= $service['nombre'] ?></h3>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#c8a951] transition-colors"><?= $service['nombre'] ?></h3>
                     <p class="text-gray-600 leading-relaxed text-sm"><?= $service['descripcion'] ?></p>
                 </div>
                 <?php endforeach; ?>
@@ -241,7 +240,7 @@
 
             <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-10 border border-gray-100">
                 <h3 class="text-2xl font-bold text-gray-800 mb-2 flex items-center">
-                    <i data-lucide="calendar" class="mr-3 h-6 w-6 text-sky-500"></i>
+                    <i data-lucide="calendar" class="mr-3 h-6 w-6 text-[#c8a951]"></i>
                     Formulario de Reserva
                 </h3>
                 <p class="text-gray-500 mb-8 text-sm">Completa tus datos para confirmar tu asistencia.</p>
@@ -251,7 +250,7 @@
                         <div class="flex flex-col md:flex-row gap-4 items-end">
                             <div class="w-full">
                                 <label for="fecha" class="block text-sm font-semibold text-gray-700 mb-2">Selecciona una fecha</label>
-                                <input type="date" id="fecha" name="fecha" value="<?= isset($fechaSeleccionada) ? $fechaSeleccionada : '' ?>" required min="<?= date('Y-m-d') ?>" class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-shadow shadow-sm">
+                                <input type="date" id="fecha" name="fecha" value="<?= isset($fechaSeleccionada) ? $fechaSeleccionada : '' ?>" required min="<?= date('Y-m-d') ?>" class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#c8a951] focus:border-[#c8a951] transition-shadow shadow-sm">
                             </div>
                             <button type="submit" class="w-full md:w-auto bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-md hover:shadow-lg whitespace-nowrap">
                                 Buscar Horarios
@@ -266,20 +265,25 @@
                     <div class="grid md:grid-cols-2 gap-6">
                         <div class="relative group">
                             <label for="nombre" class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
-                            <input type="text" id="nombre" name="nombre" pattern="^[a-zA-Z\s]+$" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all shadow-sm group-hover:border-gray-400" placeholder="Tu nombre">
+                            <input type="text" id="nombre" name="nombre" pattern="^[a-zA-Z\s]+$" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#c8a951] focus:border-[#c8a951] transition-all shadow-sm group-hover:border-gray-400" placeholder="Tu nombre">
                             <i data-lucide="user" class="absolute left-3 top-[38px] h-5 w-5 text-gray-400"></i>
                         </div>
                         <div class="relative group">
                             <label for="apellido" class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
-                            <input type="text" id="apellido" name="apellido" pattern="^[a-zA-Z\s]+$" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all shadow-sm group-hover:border-gray-400" placeholder="Tu apellido">
+                            <input type="text" id="apellido" name="apellido" pattern="^[a-zA-Z\s]+$" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#c8a951] focus:border-[#c8a951] transition-all shadow-sm group-hover:border-gray-400" placeholder="Tu apellido">
                             <i data-lucide="user" class="absolute left-3 top-[38px] h-5 w-5 text-gray-400"></i>
                         </div>
                     </div>
 
-                    <div class="grid md:grid-cols-1 gap-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="relative group">
+                            <label for="telefono" class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+                            <input type="tel" id="telefono" name="telefono" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#c8a951] focus:border-[#c8a951] transition-all shadow-sm group-hover:border-gray-400" placeholder="Ej: 11 1234 5678">
+                            <i data-lucide="phone" class="absolute left-3 top-[38px] h-5 w-5 text-gray-400"></i>
+                        </div>
                         <div class="relative group">
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input type="email" id="email" name="email" required placeholder="ejemplo@gmail.com" class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all shadow-sm group-hover:border-gray-400">
+                            <input type="email" id="email" name="email" required placeholder="ejemplo@gmail.com" class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#c8a951] focus:border-[#c8a951] transition-all shadow-sm group-hover:border-gray-400">
                             <i data-lucide="mail" class="absolute left-3 top-[38px] h-5 w-5 text-gray-400"></i>
                         </div>
                     </div>
@@ -300,7 +304,7 @@
                                 </div>
                             <?php else: ?>
                                 <div class="relative">
-                                    <select id="barbero" name="id_barbero" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 shadow-sm appearance-none">
+                                    <select id="barbero" name="id_barbero" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#c8a951] focus:border-[#c8a951] shadow-sm appearance-none">
                                         <option value="">Selecciona un barbero</option>
                                         <?php if(isset($dataBarberos) && !empty($dataBarberos)): ?>
                                             <?php foreach($dataBarberos as $barbero): ?>
@@ -319,7 +323,7 @@
                         <div>
                             <label for="servicio" class="block text-sm font-medium text-gray-700 mb-2">Servicio</label>
                             <div class="relative">
-                                <select id="servicio" name="id_servicio" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 shadow-sm appearance-none">
+                                <select id="servicio" name="id_servicio" required class="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#c8a951] focus:border-[#c8a951] shadow-sm appearance-none">
                                     <option value="">Selecciona un servicio</option>
                                         <?php if(isset($dataServicios) && !empty($dataServicios)): ?>
                                     <?php foreach($dataServicios as $service): ?>
@@ -335,8 +339,8 @@
                         </div>
                     </div>
 
-                    <div class="mt-6 p-6 bg-sky-50 rounded-xl border border-sky-100" id="horariosDisponiblesContainer">
-                        <label class="block text-sm font-bold text-sky-900 mb-4 flex items-center">
+                    <div class="mt-6 p-6 bg-[#c8a951]/10 rounded-xl border border-[#c8a951]/30" id="horariosDisponiblesContainer">
+                        <label class="block text-sm font-bold text-[#8c732d] mb-4 flex items-center">
                             <i data-lucide="clock" class="mr-2 h-4 w-4"></i>
                             Horarios Disponibles
                         </label>
@@ -354,7 +358,7 @@
                                 <?php foreach($horariosDisponibles as $horas): ?>
                                     <label class="cursor-pointer group">
                                         <input type="radio" name="horario" value="<?= $horas['id_horario'] ?>" required class="sr-only peer">
-                                        <div class="py-2 px-1 text-sm border border-sky-200 bg-white rounded-lg transition-all peer-checked:bg-sky-500 peer-checked:text-white peer-checked:border-sky-600 peer-checked:shadow-md hover:bg-sky-100 text-center font-medium text-sky-700 group-hover:-translate-y-0.5">
+                                        <div class="py-2 px-1 text-sm border border-[#c8a951]/30 bg-white rounded-lg transition-all peer-checked:bg-[#c8a951] peer-checked:text-white peer-checked:border-[#a88c3d] peer-checked:shadow-md hover:bg-[#c8a951]/10 text-center font-medium text-[#8c732d] group-hover:-translate-y-0.5">
                                             <?= substr($horas['horario'],0,5) ?>
                                         </div>
                                     </label>
@@ -367,7 +371,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-4 px-6 rounded-xl text-lg transition-all shadow-lg hover:shadow-sky-200 hover:-translate-y-1 mt-4 flex justify-center items-center">
+                    <button type="submit" class="w-full bg-[#c8a951] hover:bg-[#b09344] text-white font-bold py-4 px-6 rounded-xl text-lg transition-all shadow-lg hover:shadow-[#c8a951]/40 hover:-translate-y-1 mt-4 flex justify-center items-center">
                         <i data-lucide="check-circle" class="mr-2 h-6 w-6"></i>
                         Finalizar y Pagar Seña
                     </button>
@@ -388,8 +392,8 @@
                 <div class="space-y-6">
                     <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                         <div class="flex items-center space-x-4 mb-4">
-                            <div class="p-3 bg-sky-100 rounded-full">
-                                <i data-lucide="map-pin" class="h-6 w-6 text-sky-600"></i>
+                            <div class="p-3 bg-[#c8a951]/20 rounded-full">
+                                <i data-lucide="map-pin" class="h-6 w-6 text-[#c8a951]"></i>
                             </div>
                             <h3 class="text-xl font-bold text-gray-900">Dirección</h3>
                         </div>
@@ -402,8 +406,8 @@
 
                     <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                         <div class="flex items-center space-x-4 mb-4">
-                            <div class="p-3 bg-sky-100 rounded-full">
-                                <i data-lucide="clock" class="h-6 w-6 text-sky-600"></i>
+                            <div class="p-3 bg-[#c8a951]/20 rounded-full">
+                                <i data-lucide="clock" class="h-6 w-6 text-[#c8a951]"></i>
                             </div>
                             <h3 class="text-xl font-bold text-gray-900">Horarios</h3>
                         </div>
@@ -416,8 +420,8 @@
 
                     <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                         <div class="flex items-center space-x-4 mb-4">
-                            <div class="p-3 bg-sky-100 rounded-full">
-                                <i data-lucide="phone" class="h-6 w-6 text-sky-600"></i>
+                            <div class="p-3 bg-[#c8a951]/20 rounded-full">
+                                <i data-lucide="phone" class="h-6 w-6 text-[#c8a951]"></i>
                             </div>
                             <h3 class="text-xl font-bold text-gray-900">Contacto</h3>
                         </div>
@@ -425,7 +429,7 @@
                             <a href="https://wa.me/542665044240" target="_blank" class="flex items-center text-gray-600 hover:text-green-600 transition-colors">
                                 <i data-lucide="message-circle" class="h-5 w-5 mr-2"></i> WhatsApp: +54 266 5044240
                             </a>
-                            <a href="mailto:info@barbershopelite.com" class="flex items-center text-gray-600 hover:text-sky-600 transition-colors">
+                            <a href="mailto:info@barbershopelite.com" class="flex items-center text-gray-600 hover:text-[#c8a951] transition-colors">
                                 <i data-lucide="mail" class="h-5 w-5 mr-2"></i> Email: info@barbershopelite.com
                             </a>
                         </div>
@@ -448,27 +452,26 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-black text-white py-16 border-t border-gray-800">
+    <footer class="bg-black text-white py-16 border-t border-black">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-10 mb-10">
                 <div class="col-span-2">
                     <div class="flex items-center space-x-3 mb-6">
-                        <div class="p-2 bg-sky-600 rounded-lg">
-                            <i data-lucide="scissors" class="h-6 w-6 text-white"></i>
-                        </div>
-                        <span class="text-2xl font-bold tracking-wide">LeanStyle Barber</span>
+                        <a href="<?= base_url('/') ?>">
+                        <img src="<?= base_url('src/imagenes/logoinicial.png') ?>" alt="" style="width: 7.5em; height: 7.5em;">
+                    </a>
                     </div>
                     <p class="text-gray-400 leading-relaxed max-w-sm">
-                        Más que un corte, una experiencia. Tradición, calidad y estilo desde 1995, adaptándonos a las tendencias modernas para tu mejor imagen.
+                        Más que un corte, una experiencia. Tradición, calidad y estilo desde 2020, adaptándonos a las tendencias modernas para tu mejor imagen.
                     </p>
                 </div>
 
                 <div>
                     <h3 class="text-lg font-bold mb-6 text-gray-200">Navegación</h3>
                     <ul class="space-y-3">
-                        <li><button onclick="scrollToSection('servicios')" class="text-gray-400 hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="h-4 w-4 mr-1"></i> Servicios</button></li>
-                        <li><button onclick="scrollToSection('turnos')" class="text-gray-400 hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="h-4 w-4 mr-1"></i> Reservar Turno</button></li>
-                        <li><button onclick="scrollToSection('ubicacion')" class="text-gray-400 hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="h-4 w-4 mr-1"></i> Ubicación</button></li>
+                        <li><button onclick="scrollToSection('servicios')" class="text-gray-400 hover:text-[#c8a951] transition-colors flex items-center"><i data-lucide="chevron-right" class="h-4 w-4 mr-1"></i> Servicios</button></li>
+                        <li><button onclick="scrollToSection('turnos')" class="text-gray-400 hover:text-[#c8a951] transition-colors flex items-center"><i data-lucide="chevron-right" class="h-4 w-4 mr-1"></i> Reservar Turno</button></li>
+                        <li><button onclick="scrollToSection('ubicacion')" class="text-gray-400 hover:text-[#c8a951] transition-colors flex items-center"><i data-lucide="chevron-right" class="h-4 w-4 mr-1"></i> Ubicación</button></li>
                     </ul>
                 </div>
 
@@ -529,8 +532,8 @@
                 
                 if (mobileMenuBtn) mobileMenuBtn.classList.replace('text-white', 'text-gray-800');
                 navLinks.forEach(link => {
-                    link.classList.remove('text-white', 'hover:text-sky-400');
-                    link.classList.add('text-gray-800', 'hover:text-sky-600');
+                    link.classList.remove('text-white', 'hover:text-[#c8a951]');
+                    link.classList.add('text-gray-800', 'hover:text-[#c8a951]');
                 });
                 
                 mobileMenu.classList.add('border-t', 'border-gray-100');
@@ -541,8 +544,8 @@
                 
                 if (mobileMenuBtn) mobileMenuBtn.classList.replace('text-gray-800', 'text-white');
                 navLinks.forEach(link => {
-                    link.classList.add('text-white', 'hover:text-sky-400');
-                    link.classList.remove('text-gray-800', 'hover:text-sky-600');
+                    link.classList.add('text-white', 'hover:text-[#c8a951]');
+                    link.classList.remove('text-gray-800', 'hover:text-[#c8a951]');
                 });
                 
                 mobileMenu.classList.remove('border-t', 'border-gray-100');

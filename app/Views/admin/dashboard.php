@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración</title>
     <link rel="stylesheet" href="<?= base_url('src/output.css') ?>">
-    <link rel="icon" href="<?= base_url('src/Imagenes/leanbarber.png') ?>" type="image/png">
+    <link rel="icon" href="<?= base_url('src/Imagenes/logoinicial.png') ?>" type="image/png">
 </head>
 <body class="bg-gray-100 font-sans" x-data="{ sidebarOpen: false }">
 
@@ -16,7 +16,7 @@
         <div class="p-4">
             <a href="<?= base_url('admin') ?>" class="flex items-center space-x-2">
                 <img src="<?= base_url('src/imagenes/logoinicial.png') ?>" alt="Logo" class="h-10 w-10">
-                <span class="text-xl font-bold">LeanBarber Admin</span>
+                <span class="text-xl font-bold">LeanStyle Admin</span>
             </a>
         </div>
 

@@ -49,7 +49,7 @@
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
                     <button onclick="scrollToSection('inicio')" class="nav-link text-white hover:text-[#c8a951] transition-colors font-medium text-sm tracking-wide uppercase">Inicio</button>
-                    <button onclick="scrollToSection('historia')" class="nav-link text-white hover:text-[#c8a951] transition-colors font-medium text-sm tracking-wide uppercase">Historia</button>
+                    <button onclick="scrollToSection('sobre_mi')" class="nav-link text-white hover:text-[#c8a951] transition-colors font-medium text-sm tracking-wide uppercase">Sobre Mi</button>
                     <button onclick="scrollToSection('servicios')" class="nav-link text-white hover:text-[#c8a951] transition-colors font-medium text-sm tracking-wide uppercase">Servicios</button>
                     <button onclick="scrollToSection('turnos')" class="nav-link text-white hover:text-[#c8a951] transition-colors font-medium text-sm tracking-wide uppercase">Sacar Turno</button>
                     <button onclick="scrollToSection('ubicacion')" class="nav-link text-white hover:text-[#c8a951] transition-colors font-medium text-sm tracking-wide uppercase">Ubicación</button>
@@ -76,7 +76,7 @@
             <div id="mobile-menu" class="hidden md:hidden pb-4 bg-white rounded-b-lg shadow-xl absolute left-0 right-0 top-16 border-t border-gray-100">
                 <div class="flex flex-col space-y-2 px-4 pt-2">
                     <button onclick="scrollToSection('inicio')" class="text-left text-gray-800 hover:text-[#c8a951] hover:bg-[#c8a951]/10 rounded-md px-3 py-2 transition-colors font-medium">Inicio</button>
-                    <button onclick="scrollToSection('historia')" class="text-left text-gray-800 hover:text-[#c8a951] hover:bg-[#c8a951]/10 rounded-md px-3 py-2 transition-colors font-medium">Nuestra Historia</button>
+                    <button onclick="scrollToSection('sobre_mi')" class="text-left text-gray-800 hover:text-[#c8a951] hover:bg-[#c8a951]/10 rounded-md px-3 py-2 transition-colors font-medium">Sobre Mi</button>
                     <button onclick="scrollToSection('servicios')" class="text-left text-gray-800 hover:text-[#c8a951] hover:bg-[#c8a951]/10 rounded-md px-3 py-2 transition-colors font-medium">Servicios</button>
                     <button onclick="scrollToSection('turnos')" class="text-left text-gray-800 hover:text-[#c8a951] hover:bg-[#c8a951]/10 rounded-md px-3 py-2 transition-colors font-medium">Sacar Turno</button>
                     <button onclick="scrollToSection('ubicacion')" class="text-left text-gray-800 hover:text-[#c8a951] hover:bg-[#c8a951]/10 rounded-md px-3 py-2 transition-colors font-medium">Ubicación</button>
@@ -136,61 +136,96 @@
         </div>
     </section>
 
-    <!-- Historia Section -->
-    <section id="historia" class="py-24 bg-white">
+    <!-- Sobre Mi Section -->
+    <section id="sobre_mi" class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Nuestra Historia</h2>
+                <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Sobre Mi</h2>
                 <div class="w-24 h-1 bg-[#c8a951] mx-auto rounded-full mb-6"></div>
                 <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                    Una tradición familiar que comenzó en 1995 y continúa evolucionando con los tiempos.
+                    Barbero apasionado, transformo cortes en confianza.
                 </p>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto"> Líder en estilo y técnica </p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div class="space-y-8">
-                    <!-- Tarjetas con efecto Hover -->
-                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-x-1 hover:border-[#c8a951]/40 group">
-                        <div class="flex items-center space-x-3 mb-3">
-                            <div class="w-3 h-3 bg-gray-300 group-hover:bg-[#c8a951] rounded-full transition-colors"></div>
-                            <h3 class="text-lg font-bold text-gray-800">2020 - Los Inicios</h3>
+            <div class="grid md:grid-cols-2 gap-12 items-stretch">
+                
+                <!-- COLUMNA IZQUIERDA: Carrusel de Videos -->
+                <div class="h-full min-h-[450px] bg-white rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
+                    
+                    <!-- Contenedor de Slides -->
+                    <div id="history-carousel" class="relative h-full w-full">
+                        <!-- Slide 1: 2020 -->
+                        <div class="carousel-slide absolute inset-0 transition-opacity duration-500 ease-in-out opacity-100" data-index="0" style="z-index: 10;">
+                            <video class="w-full h-[60%] object-cover" autoplay loop muted playsinline>
+                                <source src="<?= base_url('src/Imagenes/video1.mp4') ?>" type="video/mp4">
+                                Tu navegador no soporta video.
+                            </video>
+                            <div class="p-8 bg-white h-[40%] flex flex-col justify-center relative">
+                                <div class="absolute -top-6 left-8 bg-[#c8a951] text-white px-4 py-1 rounded-full text-sm font-bold shadow-md">2020</div>
+                                <h3 class="text-2xl font-bold text-gray-800 mb-3">Los Inicios</h3>
+                                <p class="text-gray-600 leading-relaxed">Nacido en 2020 desde su propio hogar, comenzó a desarrollar su pasión por la barbería. Se formó con múltiples cursos y perfeccionó cada técnica mientras atendía a sus primeros clientes con dedicación y estilo.</p>
+                            </div>
                         </div>
-                        <p class="text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-100 group-hover:border-[#c8a951]/40 transition-colors">
-                            Don Carlos abrió las puertas de su primera barbería con una visión clara: ofrecer el mejor servicio de corte y afeitado de la ciudad.
-                        </p>
+
+                        <!-- Slide 2: 2022 -->
+                        <div class="carousel-slide absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0" data-index="1" style="z-index: 0;">
+                            <video class="w-full h-[60%] object-cover" autoplay loop muted playsinline>
+                                <source src="<?= base_url('src/Imagenes/video2.mp4') ?>" type="video/mp4">
+                            </video>
+                            <div class="p-8 bg-white h-[40%] flex flex-col justify-center relative">
+                                <div class="absolute -top-6 left-8 bg-[#c8a951] text-white px-4 py-1 rounded-full text-sm font-bold shadow-md">2022</div>
+                                <h3 class="text-2xl font-bold text-gray-800 mb-3">Expansión</h3>
+                                <p class="text-gray-600 leading-relaxed">Tras un año trabajando en una barbería profesional, ganó experiencia, confianza y una base sólida de clientes fieles. Su crecimiento lo llevó a mudarse al espacio donde continuó afianzando su identidad como barbero.</p>
+                            </div>
+                        </div>
+
+                        <!-- Slide 3: 2025 -->
+                        <div class="carousel-slide absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0" data-index="2" style="z-index: 0;">
+                            <video class="w-full h-[60%] object-cover" autoplay loop muted playsinline>
+                                <source src="<?= base_url('src/Imagenes/video3.mp4') ?>" type="video/mp4">
+                            </video>
+                            <div class="p-8 bg-white h-[40%] flex flex-col justify-center relative">
+                                <div class="absolute -top-6 left-8 bg-[#c8a951] text-white px-4 py-1 rounded-full text-sm font-bold shadow-md">2025</div>
+                                <h3 class="text-2xl font-bold text-gray-800 mb-3">Presente</h3>
+                                <p class="text-gray-600 leading-relaxed">Hoy se encuentra en su mejor momento: consolidado, con una comunidad que lo acompaña, y dando el siguiente paso hacia su propia barbería. Innovación, calidad y compromiso en cada corte.</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-x-1 hover:border-[#c8a951]/40 group">
-                        <div class="flex items-center space-x-3 mb-3">
-                            <div class="w-3 h-3 bg-gray-300 group-hover:bg-[#c8a951] rounded-full transition-colors"></div>
-                            <h3 class="text-lg font-bold text-gray-800">2022 - Expansión</h3>
-                        </div>
-                        <p class="text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-100 group-hover:border-[#c8a951]/40 transition-colors">
-                            La segunda generación se suma al negocio familiar, incorporando técnicas modernas sin perder la esencia tradicional.
-                        </p>
+                    <!-- Controles del Carrusel -->
+                    <div class="absolute top-[25%] w-full flex justify-between px-4 z-20">
+                        <button onclick="moveSlide(-1)" class="p-2 bg-white/80 hover:bg-[#c8a951] hover:text-white rounded-full shadow-md transition-all backdrop-blur-sm cursor-pointer">
+                            <i data-lucide="chevron-left" class="h-6 w-6"></i>
+                        </button>
+                        <button onclick="moveSlide(1)" class="p-2 bg-white/80 hover:bg-[#c8a951] hover:text-white rounded-full shadow-md transition-all backdrop-blur-sm cursor-pointer">
+                            <i data-lucide="chevron-right" class="h-6 w-6"></i>
+                        </button>
                     </div>
 
-                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-x-1 hover:border-[#c8a951]/40 group">
-                        <div class="flex items-center space-x-3 mb-3">
-                            <div class="w-3 h-3 bg-[#c8a951] rounded-full shadow-sm shadow-[#c8a951]/50"></div>
-                            <h3 class="text-lg font-bold text-gray-800">2025 - Presente</h3>
+                    <!-- Indicadores (Dots) -->
+                    <div class="absolute bottom-6 right-8 flex space-x-2 z-20">
+                        <button onclick="goToSlide(0)" class="carousel-dot w-3 h-3 rounded-full bg-[#c8a951] transition-all"></button>
+                        <button onclick="goToSlide(1)" class="carousel-dot w-3 h-3 rounded-full bg-gray-300 hover:bg-[#c8a951]/50 transition-all"></button>
+                        <button onclick="goToSlide(2)" class="carousel-dot w-3 h-3 rounded-full bg-gray-300 hover:bg-[#c8a951]/50 transition-all"></button>
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA: Card de Estadísticas (+15,000) -->
+                <div class="h-full flex flex-col justify-center">
+                    <div class="bg-gray-50 rounded-2xl p-10 text-center border border-gray-100 shadow-inner h-full flex flex-col justify-center items-center hover:shadow-lg transition-shadow duration-300">
+                        <div class="w-32 h-32 bg-gray-900 rounded-full mb-6 flex items-center justify-center shadow-xl shadow-gray-500/20">
+                            <i data-lucide="scissors" class="h-14 w-14 text-[#c8a951]"></i>
                         </div>
-                        <p class="text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-100 group-hover:border-[#c8a951]/40 transition-colors">
-                            Hoy somos referentes en la ciudad, combinando la experiencia de décadas con las últimas tendencias en barbería masculina.
+                        <h3 class="text-4xl font-bold text-gray-900 mb-2">15,000+</h3>
+                        <p class="text-xl text-gray-600 font-medium">Cortes Realizados</p>
+                        <p class="text-sm text-gray-400 mt-4 max-w-xs mx-auto">
+                            Generando confianza, estilo y satisfacción en cada cliente desde nuestros inicios.
                         </p>
                     </div>
                 </div>
 
-                <div class="bg-gray-50 rounded-2xl p-10 text-center border border-gray-100 shadow-inner">
-                    <div class="w-32 h-32 bg-gray-900 rounded-full mx-auto mb-6 flex items-center justify-center shadow-xl shadow-gray-500/20">
-                        <i data-lucide="scissors" class="h-14 w-14 text-[#c8a951]"></i>
-                    </div>
-                    <h3 class="text-3xl font-bold text-gray-900 mb-2">15,000+</h3>
-                    <p class="text-lg text-gray-600 font-medium">Cortes Realizados</p>
-                    <p class="text-sm text-gray-400 mt-4">Generando confianza y estilo desde nuestros inicios.</p>
-                </div>
             </div>
-        </div>
     </section>
 
     <!-- Servicios Section -->
@@ -327,7 +362,7 @@
                                     <option value="">Selecciona un servicio</option>
                                         <?php if(isset($dataServicios) && !empty($dataServicios)): ?>
                                     <?php foreach($dataServicios as $service): ?>
-                                    <option value="<?= $service['id_servicio'] ?>"><?= $service['nombre'] ?> - Total $<?= number_format($service['precio_total'], 0, ',', '.') ?></option>
+                                    <option value="<?= $service['id_servicio'] ?>"><?= $service['nombre'] ?> - Total $<?= number_format($service['precio_total'], 0, ',', '.') ?> - Seña $<?= number_format($service['monto_seña'], 0, ',', '.') ?></option>
                                     <?php endforeach; ?>
                                     <?php else: ?>
                                     <option value="">No hay servicios disponibles</option>
@@ -398,7 +433,7 @@
                             <h3 class="text-xl font-bold text-gray-900">Dirección</h3>
                         </div>
                         <p class="text-gray-600 text-lg ml-16">
-                            San Martín 1349<br>
+                            Tómas Jofre 993<br>
                             Centro de San Luis, Argentina<br>
                             <span class="text-gray-400 text-sm">CP 5700</span>
                         </p>
@@ -439,7 +474,7 @@
                 <!-- MAPA RESPONSIVE (CLASES TAILWIND) -->
                 <div class="bg-white p-3 rounded-3xl shadow-lg h-[500px] lg:h-auto relative overflow-hidden group">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d162.56753530825245!2d-66.34004509886933!3d-33.29419710494941!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95d4394e45d4846d%3A0x5551a9a0758d5382!2sSan%20Mart%C3%ADn%201349%2C%20D5702%20San%20Luis!5e1!3m2!1ses-419!2sar!4v1759026079809!5m2!1ses-419!2sar" 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2601.0530259070224!2d-66.34207882529029!3d-33.29512078957249!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95d4394e3d252517%3A0xc7d43e06e62153c!2sTom%C3%A1s%20Jofre%20993%2C%20D5702%20San%20Luis!5e1!3m2!1ses-419!2sar!4v1764562751508!5m2!1ses-419!2sar" 
                         class="w-full h-full rounded-2xl grayscale group-hover:grayscale-0 transition-all duration-500" 
                         style="border:0;" 
                         allowfullscreen="" 
@@ -582,5 +617,44 @@
     <?php endif; ?>
 </script>
 
+<!-- CAROUSEL SCRIPT (Vanilla JS) -->
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const totalSlides = slides.length;
+
+    function showSlide(index) {
+        if (index >= totalSlides) currentSlide = 0;
+        else if (index < 0) currentSlide = totalSlides - 1;
+        else currentSlide = index;
+
+        slides.forEach((slide, i) => {
+            slide.style.opacity = (i === currentSlide) ? '1' : '0';
+            slide.style.zIndex = (i === currentSlide) ? '10' : '0';
+        });
+
+        dots.forEach((dot, i) => {
+            if (i === currentSlide) {
+                dot.classList.remove('bg-gray-300', 'hover:bg-[#c8a951]/50');
+                dot.classList.add('bg-[#c8a951]');
+            } else {
+                dot.classList.add('bg-gray-300', 'hover:bg-[#c8a951]/50');
+                dot.classList.remove('bg-[#c8a951]');
+            }
+        });
+    }
+
+    function moveSlide(step) {
+        showSlide(currentSlide + step);
+    }
+
+    function goToSlide(index) {
+        showSlide(index);
+    }
+
+    // Init
+    showSlide(0);
+</script>
 </body>
 </html>
